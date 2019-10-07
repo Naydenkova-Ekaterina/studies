@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import shipping.model.Cargo;
-import shipping.service.CargoService;
+import shipping.service.api.CargoService;
 
 @Controller
 public class CargoController {
 
     private CargoService cargoService;
 
-    @Autowired(required=true)
-    @Qualifier(value="cargoService")
-    public void setCargoService(CargoService cargoService){
+    @Autowired(required = true)
+    @Qualifier(value = "cargoService")
+    public void setCargoService(CargoService cargoService) {
         this.cargoService = cargoService;
     }
 
@@ -29,33 +29,33 @@ public class CargoController {
         return "cargo";
     }
 
-    @RequestMapping(value= "/cargo/add", method = RequestMethod.POST)
-    public String addCargo(@ModelAttribute("cargo") Cargo cargo){
+    @RequestMapping(value = "/cargo/add", method = RequestMethod.POST)
+    public String addCargo(@ModelAttribute("cargo") Cargo cargo) {
 
-        if(cargo.getId() == 0){
+        if (cargo.getId() == 0) {
             this.cargoService.addCargo(cargo);
-        }else{
+        } else {
             this.cargoService.updateCargo(cargo);
         }
         return "redirect:/cargoes";
     }
 
     @RequestMapping("/remove/{id}")
-    public String removeCargo(@PathVariable("id") int id){
+    public String removeCargo(@PathVariable("id") int id) {
 
         this.cargoService.removeCargo(id);
         return "redirect:/cargoes";
     }
 
-    @RequestMapping(value="/edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model){
+    @RequestMapping(value = "/edit/{id}")
+    public String edit(@PathVariable("id") int id, Model model) {
         model.addAttribute("cargo", this.cargoService.getCargoById(id));
         model.addAttribute("listCargoes", this.cargoService.listCargoes());
         return "cargo";
     }
 
-    @RequestMapping(value= "/cargo/update", method = RequestMethod.POST)
-    public String updateCargo(@ModelAttribute("cargo") Cargo cargo){
+    @RequestMapping(value = "/cargo/update", method = RequestMethod.POST)
+    public String updateCargo(@ModelAttribute("cargo") Cargo cargo) {
         this.cargoService.updateCargo(cargo);
         return "redirect:/cargoes";
     }

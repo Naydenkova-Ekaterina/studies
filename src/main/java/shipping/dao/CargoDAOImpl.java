@@ -12,7 +12,7 @@ public class CargoDAOImpl implements CargoDAO {
 
     private SessionFactory sessionFactory;
 
-    public void setSessionFactory(SessionFactory sf){
+    public void setSessionFactory(SessionFactory sf) {
         this.sessionFactory = sf;
     }
 
@@ -46,7 +46,7 @@ public class CargoDAOImpl implements CargoDAO {
     public void removeCargo(int id) {
         Session session = this.sessionFactory.getCurrentSession();
         Cargo cargo = session.load(Cargo.class, id);
-        if(null != cargo){
+        if (null != cargo) {
             session.delete(cargo);
         }
     }

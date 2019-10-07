@@ -1,9 +1,10 @@
-package shipping.service;
+package shipping.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shipping.dao.CargoDAO;
 import shipping.model.Cargo;
+import shipping.service.api.CargoService;
 
 import java.util.List;
 

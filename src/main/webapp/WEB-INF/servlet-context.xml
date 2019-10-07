@@ -35,6 +35,12 @@
         <beans:property name="annotatedClasses">
             <beans:list>
                 <beans:value>shipping.model.Cargo</beans:value>
+                <beans:value>shipping.model.Waypoint</beans:value>
+                <beans:value>shipping.model.Order</beans:value>
+                <beans:value>shipping.model.Wagon</beans:value>
+                <beans:value>shipping.model.City</beans:value>
+                <beans:value>shipping.model.Driver</beans:value>
+
             </beans:list>
         </beans:property>
         <beans:property name="hibernateProperties">
@@ -49,7 +55,7 @@
     <beans:bean id="cargoDAO" class="shipping.dao.CargoDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
-    <beans:bean id="cargoService" class="shipping.service.CargoServiceImpl">
+    <beans:bean id="cargoService" class="shipping.service.impl.CargoServiceImpl">
         <beans:property name="cargoDAO" ref="cargoDAO"></beans:property>
     </beans:bean>
     <context:component-scan base-package="shipping" />

@@ -3,29 +3,31 @@ package shipping.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shipping.CargoStatus;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "Cargo")
+@Table(name = "Order")
 @NoArgsConstructor
 @Getter
 @Setter
-public class Cargo {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
+    private boolean isCompleted;
 
-    private double weight;
+    @ManyToOne
+    @JoinColumn(name = "wagon_id")
+    private Wagon wagon;
 
-    @Enumerated(value = EnumType.STRING)
-    private CargoStatus status;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private Set<Driver> driverSet;
 
-    @OneToMany(mappedBy = "cargo", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "orderSet")
     private Set<Waypoint> waypointSet;
+
 }

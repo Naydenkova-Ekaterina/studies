@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class TestController {
 
     @RequestMapping(method = RequestMethod.GET)
-    public String test(ModelMap modelMap){
+    public String test(ModelMap modelMap) {
         modelMap.addAttribute("message", "spring+jsp test");
         return "test";
     }

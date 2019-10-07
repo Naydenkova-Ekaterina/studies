@@ -1,4 +1,4 @@
-package shipping.service;
+package shipping.service.api;
 
 import shipping.model.Cargo;
 
