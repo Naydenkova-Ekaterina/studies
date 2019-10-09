@@ -3,7 +3,7 @@ package shipping.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shipping.WaypointType;
+import shipping.enums.WaypointType;
 
 import javax.persistence.*;
 import java.util.Set;

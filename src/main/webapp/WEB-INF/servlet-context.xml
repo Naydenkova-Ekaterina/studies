@@ -52,12 +52,51 @@
         </beans:property>
     </beans:bean>
 
-    <beans:bean id="cargoDAO" class="shipping.dao.CargoDAOImpl">
+    <beans:bean id="cargoDAO" class="shipping.dao.impl.CargoDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    <beans:bean id="wagonDAO" class="shipping.dao.impl.WagonDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="driverDAO" class="shipping.dao.impl.DriverDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="cityDAO" class="shipping.dao.impl.CityDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="orderDAO" class="shipping.dao.impl.OrderDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="waypointDAO" class="shipping.dao.impl.WaypointDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+
+
+
     <beans:bean id="cargoService" class="shipping.service.impl.CargoServiceImpl">
         <beans:property name="cargoDAO" ref="cargoDAO"></beans:property>
     </beans:bean>
+    <beans:bean id="wagonService" class="shipping.service.impl.WagonServiceImpl">
+        <beans:property name="wagonDAO" ref="wagonDAO"></beans:property>
+    </beans:bean>
+    <beans:bean id="driverService" class="shipping.service.impl.DriverServiceImpl">
+        <beans:property name="driverDAO" ref="driverDAO"></beans:property>
+    </beans:bean>
+    <beans:bean id="cityService" class="shipping.service.impl.CityServiceImpl">
+        <beans:property name="cityDAO" ref="cityDAO"></beans:property>
+    </beans:bean>
+    <beans:bean id="orderService" class="shipping.service.impl.OrderServiceImpl">
+        <beans:property name="orderDAO" ref="orderDAO"></beans:property>
+    </beans:bean>
+    <beans:bean id="waypointService" class="shipping.service.impl.WaypointServiceImpl">
+        <beans:property name="waypointDAO" ref="waypointDAO"></beans:property>
+    </beans:bean>
+
+
+
+    <beans:bean id="modelMapper" class="org.modelmapper.ModelMapper">
+    </beans:bean>
+
     <context:component-scan base-package="shipping" />
 
     <tx:annotation-driven transaction-manager="transactionManager"/>

@@ -4,21 +4,21 @@
 <%@ page session="false" %>
 <html>
 <head>
-    <title>Cargo Page</title>
+    <title>Wagon Page</title>
     <style>
         <%@include file='/resources/style.css' %>
     </style>
 </head>
 <body>
 <h1>
-    Add a Cargo
+    Add a Wagon
 </h1>
 
-<c:url var="addAction" value="/cargo/add" ></c:url>
+<c:url var="addAction" value="/wagon/add" ></c:url>
 
-<form:form action="${addAction}" modelAttribute="cargo" id="form">
+<form:form action="${addAction}" modelAttribute="wagon" id="form">
     <table>
-        <c:if test="${!empty cargo.name}">
+        <c:if test="${!empty wagon.shiftSize}">
             <tr>
                 <td>
                     <form:label path="id">
@@ -33,22 +33,22 @@
         </c:if>
         <tr>
             <td>
-                <form:label path="name">
-                    <spring:message text="Name"/>
+                <form:label path="shiftSize">
+                    <spring:message text="shiftSize"/>
                 </form:label>
             </td>
             <td>
-                <form:input path="name" />
+                <form:input path="shiftSize" />
             </td>
         </tr>
         <tr>
             <td>
-                <form:label path="weight">
-                    <spring:message text="Weight"/>
+                <form:label path="capacity">
+                    <spring:message text="capacity"/>
                 </form:label>
             </td>
             <td>
-                <form:input path="weight" />
+                <form:input path="capacity" />
             </td>
         </tr>
         <tr>
@@ -59,21 +59,20 @@
             </td>
             <td>
                 <form:select path="status" name="status" form="form">
-                    <form:option value="prepared">Prepared</form:option>
-                    <form:option value="shipped">Shipped</form:option>
-                    <form:option value="delivered">Delivered</form:option>
+                    <form:option value="serviceable">serviceable</form:option>
+                    <form:option value="faulty">faulty</form:option>
                 </form:select>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <c:if test="${!empty cargo.name}">
+                <c:if test="${!empty wagon.shiftSize}">
                     <input type="submit"
-                           value="<spring:message text="Edit Cargo"/>" />
+                           value="<spring:message text="Edit Wagon"/>" />
                 </c:if>
-                <c:if test="${empty cargo.name}">
+                <c:if test="${empty wagon.shiftSize}">
                     <input type="submit"
-                           value="<spring:message text="Add Cargo"/>" />
+                           value="<spring:message text="Add Wagon"/>" />
                 </c:if>
             </td>
         </tr>
@@ -81,26 +80,26 @@
 </form:form>
 
 <br>
-<h3>Cargoes List</h3>
-<c:if test="${!empty listCargoes}">
+<h3>Wagons List</h3>
+<c:if test="${!empty listWagons}">
     <table class="tg">
         <tr>
-            <th width="80">Cargo ID</th>
-            <th width="120">Cargo Name</th>
-            <th width="120">Cargo Weight</th>
-            <th width="120">Cargo Status</th>
+            <th width="80">Wagon ID</th>
+            <th width="120">Wagon Name</th>
+            <th width="120">Wagon Weight</th>
+            <th width="120">Wagon Status</th>
 
             <th width="60">Edit</th>
             <th width="60">Delete</th>
         </tr>
-        <c:forEach items="${listCargoes}" var="cargo">
+        <c:forEach items="${listWagons}" var="wagon">
             <tr>
-                <td>${cargo.id}</td>
-                <td>${cargo.name}</td>
-                <td>${cargo.weight}</td>
-                <td>${cargo.status}</td>
-                <td><a href="<c:url value='/cargo/edit/${cargo.id}' />">Edit</a></td>
-                <td><a href="<c:url value='/cargo/remove/${cargo.id}' />" >Delete</a></td>
+                <td>${wagon.id}</td>
+                <td>${wagon.shiftSize}</td>
+                <td>${wagon.capacity}</td>
+                <td>${wagon.status}</td>
+                <td><a href="<c:url value='/wagon/edit/${wagon.id}' />">Edit</a></td>
+                <td><a href="<c:url value='/wagon/remove/${wagon.id}' />" >Delete</a></td>
             </tr>
         </c:forEach>
     </table>

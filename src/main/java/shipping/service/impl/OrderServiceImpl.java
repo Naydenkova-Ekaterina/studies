@@ -2,28 +2,28 @@ package shipping.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shipping.dao.CargoDAO;
+import shipping.dao.OrderDAO;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
-import shipping.model.Cargo;
-import shipping.service.api.CargoService;
+import shipping.model.Order;
+import shipping.service.api.OrderService;
 
 import java.util.List;
 
 @Service
-public class CargoServiceImpl implements CargoService {
+public class OrderServiceImpl implements OrderService {
 
-    private CargoDAO cargoDAO;
+    private OrderDAO orderDAO;
 
-    public void setCargoDAO(CargoDAO cargoDAO) {
-        this.cargoDAO = cargoDAO;
+    public void setOrderDAO(OrderDAO orderDAO) {
+        this.orderDAO = orderDAO;
     }
 
     @Override
     @Transactional
-    public void addCargo(Cargo cargo) throws CustomServiceException {
+    public void addOrder(Order order) throws CustomServiceException {
         try {
-            cargoDAO.addCargo(cargo);
+            orderDAO.addOrder(order);
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -31,9 +31,9 @@ public class CargoServiceImpl implements CargoService {
 
     @Override
     @Transactional
-    public void updateCargo(Cargo cargo) throws CustomServiceException {
+    public void updateOrder(Order order) throws CustomServiceException {
         try {
-            cargoDAO.update(cargo);
+            orderDAO.update(order);
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -41,9 +41,9 @@ public class CargoServiceImpl implements CargoService {
 
     @Override
     @Transactional
-    public List<Cargo> listCargoes() throws CustomServiceException {
+    public List<Order> listOrders() throws CustomServiceException {
         try {
-            return cargoDAO.listCargoes();
+            return orderDAO.listOrders();
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -51,9 +51,9 @@ public class CargoServiceImpl implements CargoService {
 
     @Override
     @Transactional
-    public Cargo getCargoById(int id) throws CustomServiceException {
+    public Order getOrderById(int id) throws CustomServiceException {
         try {
-            return cargoDAO.getCargo(id);
+            return orderDAO.getOrder(id);
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -61,9 +61,9 @@ public class CargoServiceImpl implements CargoService {
 
     @Override
     @Transactional
-    public void removeCargo(int id) throws CustomServiceException {
+    public void removeOrder(int id) throws CustomServiceException {
         try {
-            cargoDAO.removeCargo(id);
+            orderDAO.removeOrder(id);
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }

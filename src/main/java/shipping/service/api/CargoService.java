@@ -1,15 +1,16 @@
 package shipping.service.api;
 
+import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 
 import java.util.List;
 
 public interface CargoService {
 
-    void addCargo(Cargo cargo);
-    void updateCargo(Cargo cargo);
-    List<Cargo> listCargoes();
-    Cargo getCargoById(int id);
-    void removeCargo(int id);
+    void addCargo(Cargo cargo) throws CustomServiceException;
+    void updateCargo(Cargo cargo) throws CustomServiceException;
+    List<Cargo> listCargoes() throws CustomServiceException;
+    Cargo getCargoById(int id) throws CustomServiceException;
+    void removeCargo(int id) throws CustomServiceException;
 
 }

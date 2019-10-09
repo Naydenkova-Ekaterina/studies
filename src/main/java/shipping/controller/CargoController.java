@@ -1,63 +1,102 @@
 package shipping.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import shipping.dto.CargoDTO;
+import shipping.exception.CustomDAOException;
+import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 import shipping.service.api.CargoService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class CargoController {
 
     private CargoService cargoService;
 
-    @Autowired(required = true)
-    @Qualifier(value = "cargoService")
-    public void setCargoService(CargoService cargoService) {
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    public CargoController(CargoService cargoService) {
         this.cargoService = cargoService;
     }
 
-    @RequestMapping(value = "/cargoes", method = RequestMethod.GET)
+    @GetMapping("/cargoes")
     public String listCargoes(Model model) {
-        model.addAttribute("cargo", new Cargo());
-        model.addAttribute("listCargoes", this.cargoService.listCargoes());
-        return "cargo";
-    }
-
-    @RequestMapping(value = "/cargo/add", method = RequestMethod.POST)
-    public String addCargo(@ModelAttribute("cargo") Cargo cargo) {
-
-        if (cargo.getId() == 0) {
-            this.cargoService.addCargo(cargo);
-        } else {
-            this.cargoService.updateCargo(cargo);
+        try {
+            model.addAttribute("cargo", new Cargo());
+            List<Cargo> cargoes = cargoService.listCargoes();
+            model.addAttribute("listCargoes", cargoes.stream()
+                    .map(post -> convertToDto(post))
+                    .collect(Collectors.toList()));
+            return "cargo";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
         }
-        return "redirect:/cargoes";
     }
 
-    @RequestMapping("/remove/{id}")
+    @PostMapping("/cargo/add")
+    public String addCargo(@ModelAttribute("cargo") CargoDTO cargo) {
+        try {
+            if (cargo.getId() == 0) {
+                cargoService.addCargo(convertToEntity(cargo));
+            } else {
+                cargoService.updateCargo(convertToEntity(cargo));
+            }
+            return "redirect:/cargoes";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/cargo/remove/{id}")
     public String removeCargo(@PathVariable("id") int id) {
-
-        this.cargoService.removeCargo(id);
-        return "redirect:/cargoes";
+        try {
+            cargoService.removeCargo(id);
+            return "redirect:/cargoes";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @RequestMapping(value = "/edit/{id}")
+    @GetMapping("/cargo/edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        model.addAttribute("cargo", this.cargoService.getCargoById(id));
-        model.addAttribute("listCargoes", this.cargoService.listCargoes());
-        return "cargo";
+        try {
+            model.addAttribute("cargo", convertToDto(cargoService.getCargoById(id)));
+            List<Cargo> cargoes = cargoService.listCargoes();
+            model.addAttribute("listCargoes", cargoes.stream()
+                    .map(post -> convertToDto(post))
+                    .collect(Collectors.toList()));
+            return "cargo";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @RequestMapping(value = "/cargo/update", method = RequestMethod.POST)
-    public String updateCargo(@ModelAttribute("cargo") Cargo cargo) {
-        this.cargoService.updateCargo(cargo);
-        return "redirect:/cargoes";
+    @PostMapping("/cargo/update")
+    public String updateCargo(@ModelAttribute("cargo") CargoDTO cargo) {
+        try {
+            cargoService.updateCargo(convertToEntity(cargo));
+            return "redirect:/cargoes";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private CargoDTO convertToDto(Cargo cargo) {
+        CargoDTO cargoDTO = modelMapper.map(cargo, CargoDTO.class);
+        return cargoDTO;
+    }
+
+    private Cargo convertToEntity(CargoDTO cargoDTO) {
+        Cargo cargo = modelMapper.map(cargoDTO, Cargo.class);
+        return cargo;
     }
 
 }

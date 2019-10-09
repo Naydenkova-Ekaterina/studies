@@ -3,7 +3,7 @@ package shipping.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shipping.DriverStatus;
+import shipping.enums.DriverStatus;
 
 import javax.persistence.*;
 import java.time.LocalTime;

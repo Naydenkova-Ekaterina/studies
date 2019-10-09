@@ -3,7 +3,7 @@ package shipping.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shipping.CargoStatus;
+import shipping.enums.CargoStatus;
 
 import javax.persistence.*;
 import java.util.Set;
