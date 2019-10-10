@@ -29,7 +29,7 @@ public class City {
     @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
     private Set<Waypoint> waypointSet;
 
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(name="Map",
             joinColumns=@JoinColumn(name="city1_id"),
             inverseJoinColumns=@JoinColumn(name="city2_id")
@@ -42,5 +42,7 @@ public class City {
             inverseJoinColumns=@JoinColumn(name="city1_id")
     )
     private Set<City> citySet2;
+
+     */
 
 }

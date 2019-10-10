@@ -7,6 +7,7 @@ import shipping.enums.DriverStatus;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "Driver")
@@ -23,7 +24,7 @@ public class Driver {
 
     private String surname;
 
-    private LocalTime workedHours;
+    //private LocalTime workedHours;
 
     private DriverStatus status;
 
@@ -38,5 +39,12 @@ public class Driver {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY)
+    private Set<DriverShift> driverShiftSet;
 
 }

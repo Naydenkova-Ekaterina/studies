@@ -27,7 +27,7 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private Set<Driver> driverSet;
 
-    @ManyToMany(mappedBy = "orderSet")
+    @OneToMany(mappedBy = "order")
     private Set<Waypoint> waypointSet;
 
 }

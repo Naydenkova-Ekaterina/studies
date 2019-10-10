@@ -40,6 +40,9 @@
                 <beans:value>shipping.model.Wagon</beans:value>
                 <beans:value>shipping.model.City</beans:value>
                 <beans:value>shipping.model.Driver</beans:value>
+                <beans:value>shipping.model.User</beans:value>
+                <beans:value>shipping.model.DriverShift</beans:value>
+
 
             </beans:list>
         </beans:property>

@@ -26,6 +26,14 @@ public class Cargo {
     @Enumerated(value = EnumType.STRING)
     private CargoStatus status;
 
-    @OneToMany(mappedBy = "cargo", fetch = FetchType.LAZY)
-    private Set<Waypoint> waypointSet;
+    @ManyToOne
+    @JoinColumn(name = "src_id")
+    private Waypoint src;
+
+    @ManyToOne
+    @JoinColumn(name = "dst_id")
+    private Waypoint dst;
+
+    //@OneToMany(mappedBy = "cargo", fetch = FetchType.LAZY)
+    //private Set<Waypoint> waypointSet;
 }

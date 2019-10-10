@@ -19,17 +19,24 @@ public class Waypoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private WaypointType type;
+
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
 
-    @ManyToOne()
+    /*@ManyToOne()
     @JoinColumn(name = "cargo_id")
-    private Cargo cargo;
+    private Cargo cargo;*/
 
-    private WaypointType type;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "Waypoint_Order", joinColumns = @JoinColumn(name = "waypoint_id"), inverseJoinColumns = @JoinColumn(name = "order_id"))
-    private Set<Order> orderSet;
+    @OneToMany(mappedBy = "src", fetch = FetchType.LAZY)
+    private Set<Cargo> srcCargoes;
+
+    @OneToMany(mappedBy = "dst", fetch = FetchType.LAZY)
+    private Set<Cargo> dstCargoes;
+
 }
