@@ -79,7 +79,7 @@ public class CargoController {
         }
     }
 
-    @PostMapping("/cargo/update")
+    @PutMapping("/cargo/update")
     public String updateCargo(@ModelAttribute("cargo") CargoDTO cargo) {
         try {
             cargoService.updateCargo(convertToEntity(cargo));
