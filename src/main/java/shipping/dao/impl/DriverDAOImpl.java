@@ -5,8 +5,10 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import shipping.dao.DriverDAO;
 import shipping.exception.CustomDAOException;
+import shipping.model.City;
 import shipping.model.Driver;
 
+import javax.persistence.Query;
 import java.util.List;
 
 @Repository
@@ -74,8 +76,27 @@ public class DriverDAOImpl implements DriverDAO {
     }
 
     @Override
+    public List<Driver> getAvailableDrivers(City city) throws CustomDAOException {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+
+            Query query = session.createQuery("SELECT id FROM Driver WHERE order_id IS NULL AND city = :city");
+            query.setParameter("city", city);
+
+            List<Driver> driverList = query.getResultList();
+
+            return driverList;
+
+        } catch (Exception e) {
+            throw new CustomDAOException(e);
+        }
+    }
+
+    @Override
     public List<Driver> getSuitableDrivers() throws CustomDAOException {
         try {
+            Session session = sessionFactory.getCurrentSession();
+
             return null;
 
         } catch (Exception e) {

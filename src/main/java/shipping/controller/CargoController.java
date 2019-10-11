@@ -30,10 +30,10 @@ public class CargoController {
     @GetMapping("/cargoes")
     public String listCargoes(Model model) {
         try {
-            model.addAttribute("cargo", new Cargo());
+            model.addAttribute("cargo", new CargoDTO());
             List<Cargo> cargoes = cargoService.listCargoes();
             model.addAttribute("listCargoes", cargoes.stream()
-                    .map(post -> convertToDto(post))
+                    .map(cargo -> convertToDto(cargo))
                     .collect(Collectors.toList()));
             return "cargo";
         } catch (CustomServiceException e) {
@@ -55,7 +55,7 @@ public class CargoController {
         }
     }
 
-    @GetMapping("/cargo/remove/{id}")
+    @DeleteMapping("/cargo/remove/{id}")
     public String removeCargo(@PathVariable("id") int id) {
         try {
             cargoService.removeCargo(id);
@@ -71,7 +71,7 @@ public class CargoController {
             model.addAttribute("cargo", convertToDto(cargoService.getCargoById(id)));
             List<Cargo> cargoes = cargoService.listCargoes();
             model.addAttribute("listCargoes", cargoes.stream()
-                    .map(post -> convertToDto(post))
+                    .map(cargo -> convertToDto(cargo))
                     .collect(Collectors.toList()));
             return "cargo";
         } catch (CustomServiceException e) {

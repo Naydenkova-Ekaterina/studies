@@ -1,6 +1,7 @@
 package shipping.dao;
 
 import shipping.exception.CustomDAOException;
+import shipping.model.City;
 import shipping.model.Driver;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public interface DriverDAO {
     List<Driver> listDrivers() throws CustomDAOException;
     Driver getDriver(int id) throws CustomDAOException;
     void removeDriver(int id) throws CustomDAOException;
+    List<Driver> getAvailableDrivers(City city) throws CustomDAOException;
     List<Driver> getSuitableDrivers() throws CustomDAOException;
 
 }

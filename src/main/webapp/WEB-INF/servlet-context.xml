@@ -73,6 +73,9 @@
     <beans:bean id="waypointDAO" class="shipping.dao.impl.WaypointDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    <beans:bean id="driverShiftDAO" class="shipping.dao.impl.DriverShiftDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
 
 
 
@@ -102,10 +105,9 @@
 
     <context:component-scan base-package="shipping" />
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
     <beans:bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
 </beans:beans>

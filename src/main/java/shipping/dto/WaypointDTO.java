@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shipping.enums.CargoStatus;
 
 import java.util.Set;
 
@@ -12,16 +11,16 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class CargoDTO {
+public class WaypointDTO {
 
     private int id;
 
-    private String name;
+    private CityDTO city;
 
-    private double weight;
+    private CargoDTO cargo;
 
-    private String status;
+    private String type;
 
-    private Set<WaypointDTO> waypointSet;
+    private Set<OrderDTO> orderSet;
 
 }

@@ -40,7 +40,7 @@ public class Driver {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -25,7 +25,7 @@ public class User {
 
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<Driver> driverSet;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Driver driver;
 
 }
