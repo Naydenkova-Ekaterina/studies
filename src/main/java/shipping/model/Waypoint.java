@@ -1,5 +1,6 @@
 package shipping.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Waypoint {
 
     @Id
@@ -29,14 +31,14 @@ public class Waypoint {
     @JoinColumn(name = "cargo_id")
     private Cargo cargo;*/
 
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToMany(mappedBy = "src", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "src", fetch = FetchType.EAGER)
     private Set<Cargo> srcCargoes;
 
-    @OneToMany(mappedBy = "dst", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dst", fetch = FetchType.EAGER)
     private Set<Cargo> dstCargoes;
 
 }

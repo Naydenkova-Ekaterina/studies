@@ -47,7 +47,7 @@ public class WagonServiceImpl implements WagonService {
     }
 
     public void validate(Wagon wagon) throws CustomServiceException{
-        if (wagon.getId() == null || wagon.getId().isEmpty() || wagon.getId().matches("[a-zA-Z]{2}[0-1]{5}")) {
+        if (wagon.getId() == null || wagon.getId().isEmpty() || !wagon.getId().matches("[a-zA-Z]{2}[0-9]{5}")) {
             throw new CustomServiceException("Id is not correct.");
         } else if (wagon.getShiftSize() == null) {
             throw new CustomServiceException("Shift size wasn't set.");
@@ -98,9 +98,9 @@ public class WagonServiceImpl implements WagonService {
 
             if (wagon == null) {
                 throw new CustomServiceException("This wagon doesn't exist.");
-            } else if (wagon.getOrderSet() != null) {
+            } else if (!wagon.getOrderSet().isEmpty() ) {
                 throw new CustomServiceException("Wagon can't be removed, because it has an order."); // need check !
-            } else if (wagon.getDriverSet() != null) {
+            } else if (!wagon.getDriverSet().isEmpty()) {
                 throw new CustomServiceException("Wagon can't be removed, because it has drivers."); // need check !
             }
             wagonDAO.removeWagon(id);

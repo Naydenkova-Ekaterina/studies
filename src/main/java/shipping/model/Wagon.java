@@ -1,5 +1,6 @@
 package shipping.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = {"driverSet", "orderSet", "city"})
 public class Wagon {
 
     @Id
@@ -23,16 +25,17 @@ public class Wagon {
 
     private double capacity;
 
+    @Enumerated(value = EnumType.STRING)
     private WagonStatus status;
 
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
 
-    @OneToMany(mappedBy = "wagon", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "wagon", fetch = FetchType.EAGER)
     private Set<Driver> driverSet;
 
-    @OneToMany(mappedBy = "wagon", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "wagon", fetch = FetchType.EAGER)
     private Set<Order> orderSet;
 
 

@@ -65,7 +65,7 @@ public class OrderDAOImpl implements OrderDAO {
     public void removeOrder(int id) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            Order order = session.load(Order.class, id);
+            Order order = session.get(Order.class, id);
             if (null != order) {
                 session.delete(order);
             }

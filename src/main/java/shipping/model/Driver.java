@@ -1,5 +1,6 @@
 package shipping.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = {""})
 public class Driver {
 
     @Id
@@ -26,6 +28,7 @@ public class Driver {
 
     //private LocalTime workedHours;
 
+    @Enumerated(value = EnumType.STRING)
     private DriverStatus status;
 
     @ManyToOne
@@ -44,7 +47,7 @@ public class Driver {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "driver", fetch = FetchType.EAGER)
     private Set<DriverShift> driverShiftSet;
 
 }

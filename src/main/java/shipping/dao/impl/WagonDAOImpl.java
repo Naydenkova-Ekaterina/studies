@@ -65,7 +65,7 @@ public class WagonDAOImpl implements WagonDAO {
     public void removeWagon(String id) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            Wagon wagon = session.load(Wagon.class, id);
+            Wagon wagon = session.get(Wagon.class, id);
             if (null != wagon) {
                 session.delete(wagon);
             }

@@ -1,5 +1,6 @@
 package shipping.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class User {
 
     @Id
@@ -23,9 +25,10 @@ public class User {
 
     private String password;
 
-    private UserRole userRole;
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     private Driver driver;
 
 }

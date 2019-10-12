@@ -64,7 +64,7 @@ public class CityDAOImpl implements CityDAO {
     public void removeCity(int id) throws CustomDAOException{
         try {
             Session session = sessionFactory.getCurrentSession();
-            City city = session.load(City.class, id);
+            City city = session.get(City.class, id);
             if (null != city) {
                 session.delete(city);
             }

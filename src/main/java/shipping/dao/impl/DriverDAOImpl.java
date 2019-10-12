@@ -66,7 +66,7 @@ public class DriverDAOImpl implements DriverDAO {
     public void removeDriver(int id) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            Driver driver = session.load(Driver.class, id);
+            Driver driver = session.get(Driver.class, id);
             if (null != driver) {
                 session.delete(driver);
             }

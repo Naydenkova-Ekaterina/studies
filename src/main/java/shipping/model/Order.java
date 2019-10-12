@@ -1,5 +1,6 @@
 package shipping.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,10 +9,11 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "Order")
+@Table(name = "My_Order")
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Order {
 
     @Id
@@ -24,10 +26,10 @@ public class Order {
     @JoinColumn(name = "wagon_id")
     private Wagon wagon;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Driver> driverSet;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Waypoint> waypointSet;
 
 }

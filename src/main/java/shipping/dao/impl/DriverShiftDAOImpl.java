@@ -68,7 +68,7 @@ public class DriverShiftDAOImpl implements DriverShiftDAO {
     public void removeDriverShift(int id) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            DriverShift driverShift = session.load(DriverShift.class, id);
+            DriverShift driverShift = session.get(DriverShift.class, id);
             if (null != driverShift) {
                 session.delete(driverShift);
             }

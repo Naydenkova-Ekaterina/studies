@@ -64,7 +64,7 @@ public class WaypointDAOImpl implements WaypointDAO {
     public void removeWaypoint(int id) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            Waypoint waypoint = session.load(Waypoint.class, id);
+            Waypoint waypoint = session.get(Waypoint.class, id);
             if (null != waypoint) {
                 session.delete(waypoint);
             }

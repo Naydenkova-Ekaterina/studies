@@ -1,5 +1,6 @@
 package shipping.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = {"wagonSet", "driverSet", "waypointSet"})
 public class City {
 
     @Id
@@ -20,29 +22,13 @@ public class City {
 
     private String name;
 
-    @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "city", fetch = FetchType.EAGER)
     private Set<Wagon> wagonSet;
 
-    @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "city", fetch = FetchType.EAGER)
     private Set<Driver> driverSet;
 
-    @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "city", fetch = FetchType.EAGER)
     private Set<Waypoint> waypointSet;
-
-    /*@ManyToMany
-    @JoinTable(name="Map",
-            joinColumns=@JoinColumn(name="city1_id"),
-            inverseJoinColumns=@JoinColumn(name="city2_id")
-    )
-    private Set<City> citySet1;
-
-    @ManyToMany
-    @JoinTable(name="Map",
-            joinColumns=@JoinColumn(name="city2_id"),
-            inverseJoinColumns=@JoinColumn(name="city1_id")
-    )
-    private Set<City> citySet2;
-
-     */
 
 }

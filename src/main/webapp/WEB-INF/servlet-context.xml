@@ -27,6 +27,7 @@
                         value="${jdbc.url}?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
         <beans:property name="username" value="${jdbc.username}" />
         <beans:property name="password" value="${jdbc.password}" />
+
     </beans:bean>
 
     <beans:bean id="hibernate4AnnotatedSessionFactory"
