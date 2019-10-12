@@ -91,8 +91,6 @@ public class WagonController {
         try {
             City city = cityService.getCityById(Integer.valueOf(wagonDTO.getCity_id()));
             wagonDTO.setCity(convertCityToDto(city));
-            System.out.println(wagonDTO.getId());
-            System.out.println(wagonDTO.getShiftSize());
             wagonService.updateWagon(convertToEntity(wagonDTO));
             return "redirect:/wagons";
         } catch (CustomServiceException e) {

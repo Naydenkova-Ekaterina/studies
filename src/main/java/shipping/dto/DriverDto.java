@@ -21,9 +21,15 @@ public class DriverDto {
 
     private String status;
 
+    private String city_id;
+
     private CityDTO city;
 
+    private String wagon_id;
+
     private WagonDTO wagon;
+
+    private String order_id;
 
     private OrderDTO order;
 
