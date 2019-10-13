@@ -1,5 +1,6 @@
 package shipping.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class DriverDto {
 
     private UserDTO user;
 
+    @JsonIgnore
     private Set<DriverShiftDTO> driverShiftSet;
 
 }

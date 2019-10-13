@@ -1,5 +1,6 @@
 package shipping.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,10 @@ public class OrderDTO {
 
     private WagonDTO wagon;
 
+    @JsonIgnore
     private Set<DriverDto> driverSet;
 
+    @JsonIgnore
     private Set<WaypointDTO> waypointSet;
 
 }

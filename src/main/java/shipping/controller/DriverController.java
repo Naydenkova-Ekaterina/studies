@@ -128,6 +128,9 @@ public class DriverController {
             Order order = orderService.getOrderById(Integer.valueOf(driverDto.getOrder_id()));
             driverDto.setOrder(convertOrderToDto(order));
 
+            User user = userService.getUserById(Integer.valueOf(driverDto.getUser_id()));
+            driverDto.setUser(convertUserToDto(user));
+
             driverService.updateDriver(convertToEntity(driverDto));
             return "redirect:/drivers";
         } catch (CustomServiceException e) {
