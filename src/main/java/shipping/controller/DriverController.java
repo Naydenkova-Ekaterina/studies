@@ -5,19 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import shipping.dto.CityDTO;
-import shipping.dto.DriverDto;
-import shipping.dto.OrderDTO;
-import shipping.dto.WagonDTO;
+import shipping.dto.*;
 import shipping.exception.CustomServiceException;
-import shipping.model.City;
-import shipping.model.Driver;
-import shipping.model.Order;
-import shipping.model.Wagon;
-import shipping.service.api.CityService;
-import shipping.service.api.DriverService;
-import shipping.service.api.OrderService;
-import shipping.service.api.WagonService;
+import shipping.model.*;
+import shipping.service.api.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,15 +24,18 @@ public class DriverController {
 
     private OrderService orderService;
 
+    private UserService userService;
+
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public DriverController(DriverService driverService, CityService cityService, WagonService wagonService, OrderService orderService) {
+    public DriverController(DriverService driverService, CityService cityService, WagonService wagonService, OrderService orderService, UserService userService) {
         this.driverService = driverService;
         this.cityService = cityService;
         this.wagonService = wagonService;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping("/drivers")
@@ -61,6 +55,11 @@ public class DriverController {
             List<Order> orders = orderService.listOrders();
             model.addAttribute("orders", orders.stream()
                     .map(order -> convertOrderToDto(order))
+                    .collect(Collectors.toList()));
+
+            List<User> users = userService.listUser();
+            model.addAttribute("users", users.stream()
+                    .map(user -> convertUserToDto(user))
                     .collect(Collectors.toList()));
 
             List<Driver> drivers = driverService.listDrivers();
@@ -86,6 +85,9 @@ public class DriverController {
 
             Order order = orderService.getOrderById(Integer.valueOf(driverDto.getOrder_id()));
             driverDto.setOrder(convertOrderToDto(order));
+
+            User user = userService.getUserById(Integer.valueOf(driverDto.getUser_id()));
+            driverDto.setUser(convertUserToDto(user));
 
             driverService.addDriver(convertToEntity(driverDto));
 
@@ -156,6 +158,11 @@ public class DriverController {
     public OrderDTO convertOrderToDto(Order order) {
         OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
         return orderDTO;
+    }
+
+    public UserDTO convertUserToDto(User user) {
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        return userDTO;
     }
 
 }

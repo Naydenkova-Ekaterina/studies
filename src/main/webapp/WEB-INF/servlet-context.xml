@@ -77,6 +77,9 @@
     <beans:bean id="driverShiftDAO" class="shipping.dao.impl.DriverShiftDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    <beans:bean id="userDAO" class="shipping.dao.impl.UserDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
 
 
 
@@ -97,6 +100,9 @@
     </beans:bean>
     <beans:bean id="waypointService" class="shipping.service.impl.WaypointServiceImpl">
         <beans:property name="waypointDAO" ref="waypointDAO"></beans:property>
+    </beans:bean>
+    <beans:bean id="userService" class="shipping.service.impl.UserServiceImpl">
+        <beans:property name="userDAO" ref="userDAO"></beans:property>
     </beans:bean>
 
 

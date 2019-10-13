@@ -49,6 +49,7 @@
                 <th>City</th>
                 <th>Wagon</th>
                 <th>Order</th>
+                <th>User</th>
 
             </tr>
             </thead>
@@ -68,6 +69,7 @@
                     <td>${driver.city.name}</td>
                     <td>${driver.wagon.id}</td>
                     <td>${driver.order.id}</td>
+                    <td>${driver.user.email}</td>
                     <td>
                         <a href="#editDriverModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                         <a href="#deleteDriverModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
@@ -134,6 +136,16 @@
                             <c:forEach items="${orders}" var="order">
                                 <form:option value="${order.id}">
                                     <c:out value="${order.id}" />
+                                </form:option>
+                            </c:forEach>
+                        </form:select>
+                    </div>
+                    <div class="form-group">
+                        <label>Order</label>
+                        <form:select path="user_id" name="user" class="form-control">
+                            <c:forEach items="${users}" var="user">
+                                <form:option value="${user.id}">
+                                    <c:out value="${user.email}" />
                                 </form:option>
                             </c:forEach>
                         </form:select>
@@ -205,6 +217,16 @@
                             <c:forEach items="${orders}" var="order">
                                 <form:option value="${order.id}">
                                     <c:out value="${order.id}" />
+                                </form:option>
+                            </c:forEach>
+                        </form:select>
+                    </div>
+                    <div class="form-group">
+                        <label>User</label>
+                        <form:select path="user_id" id="UpdUser" name="user" class="form-control">
+                            <c:forEach items="${users}" var="user">
+                                <form:option value="${user.id}">
+                                    <c:out value="${user.email}" />
                                 </form:option>
                             </c:forEach>
                         </form:select>

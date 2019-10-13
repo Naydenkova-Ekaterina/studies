@@ -33,6 +33,8 @@ public class DriverDto {
 
     private OrderDTO order;
 
+    private String user_id;
+
     private UserDTO user;
 
     private Set<DriverShiftDTO> driverShiftSet;
