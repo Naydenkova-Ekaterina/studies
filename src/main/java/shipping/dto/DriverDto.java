@@ -10,7 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"city", "wagon", "order", "user", "driverShiftSet"})
 public class DriverDto {
 
     private int id;

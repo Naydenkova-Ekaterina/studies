@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"city", "order", "srcCargoes", "dstCargoes"})
 public class Waypoint {
 
     @Id

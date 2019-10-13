@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {""})
+@EqualsAndHashCode(exclude = {"city", "wagon", "order", "user", "driverShiftSet"})
 public class Driver {
 
     @Id

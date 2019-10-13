@@ -53,6 +53,16 @@ public class DriverController {
                     .map(city -> convertCityToDto(city))
                     .collect(Collectors.toList()));
 
+            List<Wagon> wagons = wagonService.listWagons();
+            model.addAttribute("wagons", wagons.stream()
+                    .map(wagon -> convertWagonToDto(wagon))
+                    .collect(Collectors.toList()));
+
+            List<Order> orders = orderService.listOrders();
+            model.addAttribute("orders", orders.stream()
+                    .map(order -> convertOrderToDto(order))
+                    .collect(Collectors.toList()));
+
             List<Driver> drivers = driverService.listDrivers();
             model.addAttribute("listDrivers", drivers.stream()
                     .map(driver -> convertToDto(driver))
@@ -115,7 +125,7 @@ public class DriverController {
 
             Order order = orderService.getOrderById(Integer.valueOf(driverDto.getOrder_id()));
             driverDto.setOrder(convertOrderToDto(order));
-            
+
             driverService.updateDriver(convertToEntity(driverDto));
             return "redirect:/drivers";
         } catch (CustomServiceException e) {

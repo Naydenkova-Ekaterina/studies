@@ -10,7 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"driver"})
 public class UserDTO {
 
     private int id;

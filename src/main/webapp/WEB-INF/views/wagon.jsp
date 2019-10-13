@@ -4,7 +4,7 @@
 <%@ page session="false" %>
 <html>
 <head>
-    <title>Cargo Page</title>
+    <title>Wagon Page</title>
     <style>
         <%@include file='/resources/wagonStyle.css' %>
     </style>
@@ -50,7 +50,7 @@
             </tr>
             </thead>
             <tbody>
-                <c:forEach items="${listWagons}" var="wagon">
+                <c:forEach items="${listWagons}" var="driver">
             <tr>
                 <td>
 							<span class="custom-checkbox">
@@ -58,14 +58,14 @@
 								<label for="checkbox1"></label>
 							</span>
                 </td>
-                <td>${wagon.id}</td>
-                <td>${wagon.shiftSize}</td>
-                <td>${wagon.capacity}</td>
-                <td>${wagon.status}</td>
-                <td>${wagon.city.name}</td>
+                <td>${driver.id}</td>
+                <td>${driver.shiftSize}</td>
+                <td>${driver.capacity}</td>
+                <td>${driver.status}</td>
+                <td>${driver.city.name}</td>
                 <td>
-                    <a href="#editWagonModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${wagon.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                    <a href="#deleteWagonModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${wagon.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                    <a href="#editWagonModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                    <a href="#deleteWagonModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                 </td>
             </tr>
             </c:forEach>
@@ -107,9 +107,9 @@
                     <div class="form-group">
                         <label>City</label>
                         <form:select path="city_id" id="options" name="status" class="form-control">
-                            <c:forEach items="${cities}" var="city">
-                                <form:option value="${city.id}">
-                                    <c:out value="${city.name}" />
+                            <c:forEach items="${cities}" var="order">
+                                <form:option value="${order.id}">
+                                    <c:out value="${order.name}" />
                                 </form:option>
                             </c:forEach>
                         </form:select>
@@ -155,9 +155,9 @@
                     <div class="form-group">
                         <label>City</label>
                         <form:select path="city_id" id="UpdCity" class="form-control" >
-                            <c:forEach items="${cities}" var="city">
-                                <form:option value="${city.id}">
-                                    <c:out value="${city.name}" />
+                            <c:forEach items="${cities}" var="order">
+                                <form:option value="${order.id}">
+                                    <c:out value="${order.name}" />
                                 </form:option>
                             </c:forEach>
                         </form:select>
