@@ -92,11 +92,11 @@ public class DriverServiceImpl implements DriverService {
             Driver driver = driverDAO.getDriver(id);
             if (driver == null) {
                 throw new CustomServiceException("Driver wasn't found.");
-            } else if (driver.getOrder() != null) {
+            } /*else if (driver.getOrder() != null) {
                 throw new CustomServiceException("Driver can't be removed, because he has an order.");
             } else if (driver.getWagon() != null) {
                 // need or not
-            }
+            }*/
             driverDAO.removeDriver(id);
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
