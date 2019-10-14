@@ -37,16 +37,21 @@ public class DriverController {
 
     private UserConverter userConverter;
 
+    private WaypointConverter waypointConverter;
+
+    private WaypointService waypointService;
+
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public DriverController(DriverService driverService, CityService cityService, WagonService wagonService, OrderService orderService, UserService userService) {
+    public DriverController(DriverService driverService, CityService cityService, WagonService wagonService, OrderService orderService, UserService userService, WaypointService waypointService) {
         this.driverService = driverService;
         this.cityService = cityService;
         this.wagonService = wagonService;
         this.orderService = orderService;
         this.userService = userService;
+        this.waypointService = waypointService;
     }
 
     @GetMapping("/drivers")
@@ -166,5 +171,48 @@ public class DriverController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("/driver/info/{id}")
+    public String info(@PathVariable("id") int id, Model model) {
+        try {
+            waypointConverter = new WaypointConverter(modelMapper);
+            Driver driver = driverService.getDriverById(id);
+            int personalNumber = driver.getId();
+            String wagonId = driver.getWagon().getId();
+
+            List<Integer> codrivers = driverService.driversByWagon(wagonId);
+
+            Order order = orderService.getOrderByWagon(wagonId);
+            List<WaypointDTO> waypointDTOList = waypointService.waypointsForOrder(order.getId()).stream()
+                    .map(waypoint -> waypointConverter.convertToDto(waypoint))
+                    .collect(Collectors.toList());
+            DriverInfoDTO driverInfoDTO = new DriverInfoDTO(personalNumber, wagonId, codrivers, order.getId(), waypointDTOList);
+
+
+            model.addAttribute("selDriverInfo", driverInfoDTO);
+
+            return "driverInfo";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+   /* @GetMapping("/driver/info/{id}")
+    public @ResponseBody void info(@PathVariable("id") int id) {
+        try {
+            driverConverter = new DriverConverter(modelMapper);
+            Driver driver = driverService.getDriverById(id);
+            int personalNumber = driver.getId();
+            String wagonId = driver.getWagon().getId();
+
+            List<Integer> codrivers = driverService.driversByWagon(wagonId);
+
+            Order order = orderService.getOrderByWagon(wagonId);
+            List<Waypoint> waypointList = waypointService.waypointsForOrder(order.getId());
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+*/
 
 }

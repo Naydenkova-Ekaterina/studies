@@ -68,4 +68,13 @@ public class OrderServiceImpl implements OrderService {
             throw new CustomServiceException(e);
         }
     }
+
+    @Override
+    @Transactional
+    public Order getOrderByWagon(String id) throws CustomServiceException {
+        for (Order order: listOrders() ) {
+            if (order.getWagon().getId().equals(id)) return order;
+        }
+        return null;
+    }
 }

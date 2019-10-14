@@ -8,6 +8,7 @@ import shipping.exception.CustomServiceException;
 import shipping.model.Waypoint;
 import shipping.service.api.WaypointService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,5 +38,15 @@ public class WaypointServiceImpl implements WaypointService {
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<Waypoint> waypointsForOrder(int id) throws CustomServiceException {
+        List<Waypoint> result = new ArrayList<>();
+        for (Waypoint w: listWaypoints()) {
+            if (w.getOrder().getId() == id) result.add(w);
+        }
+        return result;
     }
 }

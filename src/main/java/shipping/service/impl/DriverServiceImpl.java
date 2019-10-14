@@ -92,7 +92,7 @@ public class DriverServiceImpl implements DriverService {
             Driver driver = driverDAO.getDriver(id);
             if (driver == null) {
                 throw new CustomServiceException("Driver wasn't found.");
-            } /*else if (driver.getOrder() != null) {
+            } /*else if (driver.getOrder() != null) {                           // should be returned
                 throw new CustomServiceException("Driver can't be removed, because he has an order.");
             } else if (driver.getWagon() != null) {
                 // need or not
@@ -101,6 +101,16 @@ public class DriverServiceImpl implements DriverService {
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<Integer> driversByWagon(String id) throws CustomServiceException {
+        List<Integer> drivers = new ArrayList<>();
+        for (Driver driver: listDrivers()) {
+            if (driver.getWagon().getId().equals(id)) drivers.add(driver.getId());
+        }
+        return drivers;
     }
 
     @Override

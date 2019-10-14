@@ -15,6 +15,7 @@ public interface DriverService {
     List<Driver> listDrivers() throws CustomServiceException;
     Driver getDriverById(int id) throws CustomServiceException;
     void removeDriver(int id) throws CustomServiceException;
+    List<Integer> driversByWagon(String id) throws CustomServiceException;
     Map<Driver, LocalTime> getSuitableDrivers(Order order) throws CustomServiceException;
 
 }

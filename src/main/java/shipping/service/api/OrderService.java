@@ -12,5 +12,6 @@ public interface OrderService {
     List<Order> listOrders() throws CustomServiceException;
     Order getOrderById(int id) throws CustomServiceException;
     void removeOrder(int id) throws CustomServiceException;
+    Order getOrderByWagon(String id) throws CustomServiceException;
 
 }

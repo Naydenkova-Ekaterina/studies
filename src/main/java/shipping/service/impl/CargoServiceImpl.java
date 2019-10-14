@@ -8,6 +8,7 @@ import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 import shipping.service.api.CargoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,5 +68,15 @@ public class CargoServiceImpl implements CargoService {
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<Cargo> cargoesForWaypoint(int id) throws CustomServiceException {
+        List<Cargo> result =new ArrayList<>();
+        for (Cargo cargo: listCargoes()) {
+            if (cargo.getDst().getId() == id || cargo.getSrc().getId() == id) result.add(cargo);
+        }
+        return result;
     }
 }
