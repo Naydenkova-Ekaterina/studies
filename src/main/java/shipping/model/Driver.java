@@ -44,6 +44,10 @@ public class Driver {
     private Order order;
 
     @OneToOne
+    @JoinColumn(name = "driverShift_id")
+    private DriverShift driverShift;
+
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -25,8 +25,5 @@ public class DriverShift {
 
     private LocalTime workedHours;
 
-    @ManyToOne
-    @JoinColumn(name = "driver_id")
-    private Driver driver;
 
 }

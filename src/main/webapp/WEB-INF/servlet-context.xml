@@ -80,6 +80,9 @@
     <beans:bean id="userDAO" class="shipping.dao.impl.UserDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    <beans:bean id="roadDAO" class="shipping.dao.impl.RoadDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
 
 
 
@@ -103,6 +106,9 @@
     </beans:bean>
     <beans:bean id="userService" class="shipping.service.impl.UserServiceImpl">
         <beans:property name="userDAO" ref="userDAO"></beans:property>
+    </beans:bean>
+    <beans:bean id="roadService" class="shipping.service.impl.RoadServiceImpl">
+        <beans:property name="roadDAO" ref="roadDAO"></beans:property>
     </beans:bean>
 
 
