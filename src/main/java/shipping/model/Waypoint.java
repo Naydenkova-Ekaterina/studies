@@ -31,9 +31,9 @@ public class Waypoint {
     @JoinColumn(name = "cargo_id")
     private Cargo cargo;*/
 
-    @ManyToOne( fetch = FetchType.EAGER)
+    /*@ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Order order;*/
 
     @OneToMany(mappedBy = "src", fetch = FetchType.EAGER)
     private Set<Cargo> srcCargoes;

@@ -51,7 +51,4 @@ public class Driver {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "driver", fetch = FetchType.EAGER)
-    private Set<DriverShift> driverShiftSet;
-
 }

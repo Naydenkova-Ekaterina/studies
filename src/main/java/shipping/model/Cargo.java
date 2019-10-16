@@ -29,6 +29,10 @@ public class Cargo {
     private CargoStatus status;
 
     @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne
     @JoinColumn(name = "src_id")
     private Waypoint src;
 

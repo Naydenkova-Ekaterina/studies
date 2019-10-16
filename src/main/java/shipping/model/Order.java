@@ -29,7 +29,10 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Driver> driverSet;
 
+    /*@OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    private Set<Waypoint> waypointSet;*/
+
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
-    private Set<Waypoint> waypointSet;
+    private Set<Cargo> cargoSet;
 
 }
