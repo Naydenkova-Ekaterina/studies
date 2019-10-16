@@ -21,6 +21,4 @@ public class WaypointDTO {
 
     private String type;
 
-    private Set<OrderDTO> orderSet;
-
 }

@@ -17,6 +17,4 @@ public class DriverShiftDTO {
 
     private String workedHours;
 
-    private DriverDto driver;
-
 }

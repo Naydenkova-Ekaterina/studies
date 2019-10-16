@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"city", "wagon", "order", "user", "driverShiftSet"})
+@EqualsAndHashCode(exclude = {"city", "wagon", "order", "user", "driverShiftSet", "driverShiftDTO"})
 public class DriverDto {
 
     private int id;
@@ -38,7 +38,6 @@ public class DriverDto {
 
     private UserDTO user;
 
-    @JsonIgnore
-    private Set<DriverShiftDTO> driverShiftSet;
+    private DriverShiftDTO driverShiftDTO;
 
 }

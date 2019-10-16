@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"driver"})
+@EqualsAndHashCode
 public class UserDTO {
 
     private int id;
@@ -21,8 +21,5 @@ public class UserDTO {
     private String password;
 
     private String userRole;
-
-    @JsonIgnore
-    private Set<DriverDto> driverSet;
 
 }
