@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -19,6 +20,8 @@ public class OrderDTO {
     private boolean isCompleted;
 
     private WagonDTO wagon;
+
+    private List<CargoDTO> cargoDTOS;
 
     @JsonIgnore
     private Set<DriverDto> driverSet;

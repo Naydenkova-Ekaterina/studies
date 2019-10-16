@@ -1,0 +1,22 @@
+package shipping.service.api;
+
+import shipping.dto.*;
+import shipping.exception.CustomServiceException;
+import shipping.model.City;
+import shipping.model.Road;
+
+import java.time.LocalTime;
+import java.util.LinkedList;
+import java.util.List;
+
+public interface RouteService {
+
+    LinkedList<City> getPath(int from, int to) throws CustomServiceException;
+
+    RouteDTO remakeRoute(RouteDTO oldRoute, CargoDTO newCargo) throws CustomServiceException;
+
+    double countDistanceForRoute(List<CityDTO> linkedList) throws CustomServiceException;
+
+    LocalTime getRouteTime(RouteDTO routeDTO) throws CustomServiceException;
+
+}

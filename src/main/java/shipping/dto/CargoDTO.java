@@ -22,6 +22,7 @@ public class CargoDTO {
 
     private String status;
 
-    private Set<WaypointDTO> waypointSet;
+    private WaypointDTO src;
 
+    private WaypointDTO dst;
 }
