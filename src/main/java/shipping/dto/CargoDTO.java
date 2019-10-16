@@ -24,7 +24,13 @@ public class CargoDTO {
 
     private OrderDTO orderDTO;
 
+    private int orderDTO_id;
+
     private WaypointDTO src;
 
+    private int src_id;
+
     private WaypointDTO dst;
+
+    private int dst_id;
 }

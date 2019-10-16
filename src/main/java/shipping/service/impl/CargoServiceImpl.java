@@ -79,4 +79,24 @@ public class CargoServiceImpl implements CargoService {
         }
         return result;
     }
+
+    @Override
+    @Transactional
+    public List<Cargo> cargoesForSrcWaypoint(int id) throws CustomServiceException {
+        List<Cargo> result =new ArrayList<>();
+        for (Cargo cargo: listCargoes()) {
+            if (cargo.getSrc().getId() == id) result.add(cargo);
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public List<Cargo> cargoesForDstWaypoint(int id) throws CustomServiceException {
+        List<Cargo> result =new ArrayList<>();
+        for (Cargo cargo: listCargoes()) {
+            if (cargo.getDst().getId() == id) result.add(cargo);
+        }
+        return result;
+    }
 }

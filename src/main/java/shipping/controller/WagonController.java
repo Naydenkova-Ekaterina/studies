@@ -6,12 +6,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shipping.dto.converter.CityConverter;
+import shipping.dto.converter.OrderConverter;
 import shipping.dto.converter.WagonConverter;
 import shipping.dto.WagonDTO;
 import shipping.exception.CustomServiceException;
 import shipping.model.City;
+import shipping.model.Order;
 import shipping.model.Wagon;
 import shipping.service.api.CityService;
+import shipping.service.api.OrderService;
 import shipping.service.api.WagonService;
 
 import java.util.List;
@@ -24,6 +27,8 @@ public class WagonController {
 
     private CityService cityService;
 
+    private OrderService orderService;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -31,11 +36,14 @@ public class WagonController {
 
     private CityConverter cityConverter;
 
+    private OrderConverter orderConverter;
+
 
     @Autowired
-    public WagonController(WagonService wagonService, CityService cityService) {
+    public WagonController(WagonService wagonService, CityService cityService, OrderService orderService) {
         this.wagonService = wagonService;
         this.cityService = cityService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/wagons")
@@ -104,6 +112,22 @@ public class WagonController {
             wagonDTO.setCity(cityConverter.convertToDto(city));
             wagonService.updateWagon(wagonConverter.convertToEntity(wagonDTO));
             return "redirect:/wagons";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/wagon/getSuitable/{id}")
+    public @ResponseBody List<WagonDTO> getSuitableWagons(@PathVariable("id") int id) {
+        try {
+            wagonConverter = new WagonConverter(modelMapper);
+            orderConverter = new OrderConverter(modelMapper);
+            Order order = orderService.getOrderById(id);
+            double orderWeight = orderService.countOrderWeight(orderConverter.convertToDto(order));
+            List<WagonDTO> result =  wagonService.getSuitableWagons(orderWeight).stream()
+                    .map(wagon -> wagonConverter.convertToDto(wagon))
+                    .collect(Collectors.toList());
+            return result;
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }

@@ -16,4 +16,9 @@ public class WaypointConverter {
         WaypointDTO waypointDTO = modelMapper.map(waypoint, WaypointDTO.class);
         return waypointDTO;
     }
+
+    public Waypoint convertToEntity(WaypointDTO waypointDTO) {
+        Waypoint waypoint = modelMapper.map(waypointDTO, Waypoint.class);
+        return waypoint;
+    }
 }

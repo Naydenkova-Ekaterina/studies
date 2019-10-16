@@ -1,5 +1,6 @@
 package shipping.service.api;
 
+import shipping.dto.OrderDTO;
 import shipping.exception.CustomServiceException;
 import shipping.model.Order;
 
@@ -13,5 +14,6 @@ public interface OrderService {
     Order getOrderById(int id) throws CustomServiceException;
     void removeOrder(int id) throws CustomServiceException;
     Order getOrderByWagon(String id) throws CustomServiceException;
+    double countOrderWeight(OrderDTO order);
 
 }

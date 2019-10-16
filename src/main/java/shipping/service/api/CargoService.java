@@ -13,5 +13,8 @@ public interface CargoService {
     Cargo getCargoById(int id) throws CustomServiceException;
     void removeCargo(int id) throws CustomServiceException;
     List<Cargo> cargoesForWaypoint(int id) throws CustomServiceException;
+    List<Cargo> cargoesForSrcWaypoint(int id) throws CustomServiceException;
+    List<Cargo> cargoesForDstWaypoint(int id) throws CustomServiceException;
+
 
 }
