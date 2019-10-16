@@ -40,16 +40,24 @@ public class RouteServiceImpl implements RouteService {
     }
 
     public RouteDTO remakeRoute(RouteDTO oldRoute, CargoDTO newCargo) throws CustomServiceException {
-        if (!oldRoute.getCityDTOList().contains(newCargo.getSrc())) {
+        if (!oldRoute.getCityDTOList().contains(newCargo.getSrc()) ||
+                (oldRoute.getCityDTOList().contains(newCargo.getSrc()) && oldRoute.getCityDTOList().contains(newCargo.getDst()))) {
             return oldRoute;
         }
         RouteDTO newRoute = new RouteDTO();
         int citiesCount = oldRoute.getCityDTOList().size();
         Map<Double, LinkedList<City>> map = new HashMap<>();
+
         int startChangingIndexForRoute = oldRoute.getCityDTOList().indexOf(newCargo.getSrc().getCity());
         for (int i = startChangingIndexForRoute; i < citiesCount; i++) {
-            LinkedList<City> newSubRoute = getPath(cityService.listCities().indexOf(newCargo.getSrc().getCity()),cityService.listCities().indexOf(newCargo.getDst().getCity()));
-            map.put(countDistanceForRoute(newSubRoute.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList())), newSubRoute);
+            CityDTO current = oldRoute.getCityDTOList().get(i);
+            LinkedList<City> newSubRouteNewSrcToNewDst = getPath(cityService.listCities().indexOf(current),
+                    cityService.listCities().indexOf(newCargo.getDst().getCity()));
+            LinkedList<City> newSubRouteNewDstToOldDst = getPath(cityService.listCities().indexOf(newCargo.getDst().getCity()),
+                    cityService.listCities().indexOf(oldRoute.getCityDTOList().get(citiesCount-1)));
+            newSubRouteNewDstToOldDst.removeFirst();
+            newSubRouteNewSrcToNewDst.addAll(newSubRouteNewDstToOldDst);
+            map.put(countDistanceForRoute(newSubRouteNewSrcToNewDst.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList())), newSubRouteNewSrcToNewDst);
         }
         double min = Double.MAX_VALUE;
         for (double key: map.keySet()) {
