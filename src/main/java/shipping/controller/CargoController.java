@@ -87,14 +87,14 @@ public class CargoController {
     public @ResponseBody List<CargoDTO> listFreeCargoes(){
         try {
             cargoConverter = new CargoConverter(modelMapper);
-            List<CargoDTO> result = new ArrayList<>();
-            List<CargoDTO> cargoDTOS = cargoService.listCargoes().stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
-            for (CargoDTO cargo: cargoDTOS) {
-                if (cargo.getOrderDTO() == null) {
+            List<Cargo> result = new ArrayList<>();
+            List<Cargo> cargos = cargoService.listCargoes();
+            for (Cargo cargo: cargos) {
+                if (cargo.getOrder() == null) {
                     result.add(cargo);
                 }
             }
-            return result;
+            return result.stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
