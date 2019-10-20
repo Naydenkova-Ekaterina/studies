@@ -9,12 +9,14 @@ import shipping.enums.CargoStatus;
 import javax.persistence.*;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.*;
+
 @Entity
 @Table(name = "Cargo")
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"src", "dst"})
+@EqualsAndHashCode(exclude = {"src", "dst", "route"})
 public class Cargo {
 
     @Id
@@ -28,7 +30,7 @@ public class Cargo {
     @Enumerated(value = EnumType.STRING)
     private CargoStatus status;
 
-    @ManyToOne
+    @ManyToOne(cascade = {MERGE, PERSIST, DETACH, REFRESH})
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -40,6 +42,4 @@ public class Cargo {
     @JoinColumn(name = "dst_id")
     private Waypoint dst;
 
-    //@OneToMany(mappedBy = "cargo", fetch = FetchType.LAZY)
-    //private Set<Waypoint> waypointSet;
 }

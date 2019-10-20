@@ -44,9 +44,9 @@ public class WaypointServiceImpl implements WaypointService {
     @Transactional
     public List<Waypoint> waypointsForOrder(int id) throws CustomServiceException {
         List<Waypoint> result = new ArrayList<>();
-        for (Waypoint w: listWaypoints()) {
-            if (w.getOrder().getId() == id) result.add(w);
-        }
+//        for (Waypoint w: listWaypoints()) {
+//            if (w.getOrder().getId() == id) result.add(w);
+//        }
         return result;
     }
 }

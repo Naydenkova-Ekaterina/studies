@@ -13,6 +13,8 @@ import java.util.List;
 @EqualsAndHashCode(exclude = {"cityDTOList"})
 public class RouteDTO {
 
+    private int id;
+
     private List<CityDTO> cityDTOList;
 
     private int currentCity_id;

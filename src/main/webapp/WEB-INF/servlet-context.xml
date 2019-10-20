@@ -43,7 +43,8 @@
                 <beans:value>shipping.model.Driver</beans:value>
                 <beans:value>shipping.model.User</beans:value>
                 <beans:value>shipping.model.DriverShift</beans:value>
-
+                <beans:value>shipping.model.Road</beans:value>
+                <beans:value>shipping.model.Route</beans:value>
 
             </beans:list>
         </beans:property>
@@ -83,6 +84,9 @@
     <beans:bean id="roadDAO" class="shipping.dao.impl.RoadDAOImpl">
         <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </beans:bean>
+    <beans:bean id="routeDAO" class="shipping.dao.impl.RouteDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
 
 
 
@@ -100,6 +104,8 @@
     </beans:bean>
     <beans:bean id="orderService" class="shipping.service.impl.OrderServiceImpl">
         <beans:property name="orderDAO" ref="orderDAO"></beans:property>
+        <beans:property name="cargoDAO" ref="cargoDAO"></beans:property>
+
     </beans:bean>
     <beans:bean id="waypointService" class="shipping.service.impl.WaypointServiceImpl">
         <beans:property name="waypointDAO" ref="waypointDAO"></beans:property>
@@ -109,6 +115,9 @@
     </beans:bean>
     <beans:bean id="roadService" class="shipping.service.impl.RoadServiceImpl">
         <beans:property name="roadDAO" ref="roadDAO"></beans:property>
+    </beans:bean>
+    <beans:bean id="routeService" class="shipping.service.impl.RouteServiceImpl">
+        <beans:property name="routeDAO" ref="routeDAO"></beans:property>
     </beans:bean>
 
 

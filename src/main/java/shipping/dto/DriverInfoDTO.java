@@ -18,7 +18,7 @@ public class DriverInfoDTO {
 
     private List<Integer> codrivers;
 
-    private int order_id;
+    private String order_id;
 
     private List<WaypointDTO> waypoints;
 }

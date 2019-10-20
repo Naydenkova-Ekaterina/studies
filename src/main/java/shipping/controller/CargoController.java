@@ -18,6 +18,7 @@ import shipping.service.api.CargoService;
 import shipping.service.api.OrderService;
 import shipping.service.api.WaypointService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,21 +83,39 @@ public class CargoController {
         }
     }
 
+    @GetMapping("/cargo/listFreeCargoes")
+    public @ResponseBody List<CargoDTO> listFreeCargoes(){
+        try {
+            cargoConverter = new CargoConverter(modelMapper);
+            List<CargoDTO> result = new ArrayList<>();
+            List<CargoDTO> cargoDTOS = cargoService.listCargoes().stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
+            for (CargoDTO cargo: cargoDTOS) {
+                if (cargo.getOrderDTO() == null) {
+                    result.add(cargo);
+                }
+            }
+            return result;
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @PostMapping("/cargo/add")
     public String addCargo(@ModelAttribute("cargo") CargoDTO cargo) {
         try {
             cargoConverter = new CargoConverter(modelMapper);
             waypointConverter = new WaypointConverter(modelMapper);
 
-            Waypoint src = waypointService.getWaypointById(cargo.getSrc_id());
+            Waypoint src = waypointService.getWaypointById(Integer.parseInt(cargo.getSrc_id()));
             cargo.setSrc(waypointConverter.convertToDto(src));
 
-            Waypoint dst = waypointService.getWaypointById(cargo.getDst_id());
+            Waypoint dst = waypointService.getWaypointById(Integer.parseInt(cargo.getDst_id()));
             cargo.setDst(waypointConverter.convertToDto(dst));
 
-            Order order = orderService.getOrderById(cargo.getOrderDTO_id());
-            cargo.setOrderDTO(orderConverter.convertToDto(order));
-
+            if (cargo.getOrderDTO_id() != null) {
+                Order order = orderService.getOrderById(Integer.parseInt(cargo.getOrderDTO_id()));
+                cargo.setOrderDTO(orderConverter.convertToDto(order));
+            }
             cargoService.addCargo(cargoConverter.convertToEntity(cargo));
 
             return "redirect:/cargoes";
@@ -132,14 +151,11 @@ public class CargoController {
 
             waypointConverter = new WaypointConverter(modelMapper);
 
-            Waypoint src = waypointService.getWaypointById(cargo.getSrc_id());
+            Waypoint src = waypointService.getWaypointById(Integer.parseInt(cargo.getSrc_id()));
             cargo.setSrc(waypointConverter.convertToDto(src));
 
-            Waypoint dst = waypointService.getWaypointById(cargo.getDst_id());
+            Waypoint dst = waypointService.getWaypointById(Integer.parseInt(cargo.getDst_id()));
             cargo.setDst(waypointConverter.convertToDto(dst));
-
-            Order order = orderService.getOrderById(cargo.getOrderDTO_id());
-            cargo.setOrderDTO(orderConverter.convertToDto(order));
 
             cargoService.updateCargo(cargoConverter.convertToEntity(cargo));
             return "redirect:/cargoes";

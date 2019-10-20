@@ -4,12 +4,19 @@ import shipping.dto.*;
 import shipping.exception.CustomServiceException;
 import shipping.model.City;
 import shipping.model.Road;
+import shipping.model.Route;
 
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 
 public interface RouteService {
+
+    void addRoute(Route route) throws CustomServiceException;
+    void updateRoute(Route route) throws CustomServiceException;
+    List<Route> listRoute() throws CustomServiceException;
+    Route getRouteById(int id) throws CustomServiceException;
+    void removeRoute(int id) throws CustomServiceException;
 
     LinkedList<City> getPath(int from, int to) throws CustomServiceException;
 

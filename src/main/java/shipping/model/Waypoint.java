@@ -21,6 +21,7 @@ public class Waypoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Enumerated(value = EnumType.STRING)
     private WaypointType type;
 
     @ManyToOne

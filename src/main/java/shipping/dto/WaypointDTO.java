@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"city", "srcCargoes", "dstCargoes"})
+@EqualsAndHashCode(exclude = {"city"})
 public class WaypointDTO {
 
     private int id;
@@ -23,9 +23,4 @@ public class WaypointDTO {
 
     private String type;
 
-    @JsonIgnore
-    private Set<CargoDTO> srcCargoes;
-
-    @JsonIgnore
-    private Set<CargoDTO> dstCargoes;
 }

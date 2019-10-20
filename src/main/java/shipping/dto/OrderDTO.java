@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"wagon", "driverSet", "waypointSet", "routeDTO"})
+@EqualsAndHashCode(exclude = {"wagon", "driverSet", "routeDTO", "cargoDTOS"})
 public class OrderDTO {
 
     private int id;
@@ -21,11 +21,13 @@ public class OrderDTO {
 
     private WagonDTO wagon;
 
-    private List<CargoDTO> cargoDTOS;
+    private Set<CargoDTO> cargoDTOS;
+
+    private String cargoDTO_id;
 
     private RouteDTO routeDTO;
 
     @JsonIgnore
-    private Set<DriverDto> driverSet;
+    private List<DriverDto> driverSet;
 
 }

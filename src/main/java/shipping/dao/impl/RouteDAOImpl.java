@@ -2,13 +2,15 @@ package shipping.dao.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import shipping.dao.UserDAO;
+import org.springframework.stereotype.Repository;
+import shipping.dao.RouteDAO;
 import shipping.exception.CustomDAOException;
-import shipping.model.User;
+import shipping.model.Route;
 
 import java.util.List;
 
-public class UserDAOImpl implements UserDAO {
+@Repository
+public class RouteDAOImpl implements RouteDAO {
 
     private SessionFactory sessionFactory;
 
@@ -17,54 +19,54 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void addUser(User user) throws CustomDAOException {
+    public void addRoute(Route route) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            session.persist(user);
+            session.persist(route);
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }
     }
 
     @Override
-    public void update(User user) throws CustomDAOException {
+    public void update(Route route) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            session.update(user);
+            session.update(route);
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }
     }
 
     @Override
-    public List<User> listUsers() throws CustomDAOException {
+    public List<Route> listRoutes() throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            List<User> userList = session.createQuery("from User").list();
-            return userList;
+            List<Route> routes = session.createQuery("from Route").list();
+            return routes;
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }
     }
 
     @Override
-    public User getUser(int id) throws CustomDAOException {
+    public Route getRoute(int id) throws CustomDAOException {
         try {
             Session session = this.sessionFactory.getCurrentSession();
-            User user = session.get(User.class, id);
-            return user;
+            Route route = session.get(Route.class, id);
+            return route;
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }
     }
 
     @Override
-    public void removeUser(int id) throws CustomDAOException {
+    public void removeRoute(int id) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            User user = session.get(User.class, id);
-            if (null != user) {
-                session.delete(user);
+            Route route = session.get(Route.class, id);
+            if (null != route) {
+                session.delete(route);
             }
         } catch (Exception e) {
             throw new CustomDAOException(e);

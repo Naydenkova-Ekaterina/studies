@@ -1,12 +1,9 @@
 package shipping.dijkstra;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import shipping.exception.CustomServiceException;
 import shipping.model.City;
 import shipping.model.Road;
-import shipping.service.api.CityService;
-import shipping.service.api.RoadService;
 
 import java.util.*;
 
@@ -14,32 +11,26 @@ import java.util.*;
 public class Algorithm {
 
     private Graph graph;
-    private Set<City> visitedVertexes;
-    private Set<City> unvisitedVertexes;
+    private Set<City> settledNodes;
+    private Set<City> unSettledNodes;
     private Map<City, City> predecessors;
     private Map<City, Double> distances;
 
-    @Autowired
-    private CityService cityService;
-
-    @Autowired
-    private RoadService roadService;
-
-    public Algorithm() throws CustomServiceException {
-        graph = new Graph(cityService.listCities(), roadService.listRoads());
-        visitedVertexes = new HashSet<>();
-        unvisitedVertexes = new HashSet<>();
+    public Algorithm(Graph graph) {
+        this.graph = graph;
+        settledNodes = new HashSet<>();
+        unSettledNodes = new HashSet<>();
         distances = new HashMap<>();
         predecessors = new HashMap<>();
     }
 
     public void start(City src) {
         distances.put(src, 0.0);
-        unvisitedVertexes.add(src);
-        while (unvisitedVertexes.size() > 0) {
-            City node = getMinimum(unvisitedVertexes);
-            visitedVertexes.add(node);
-            unvisitedVertexes.remove(node);
+        unSettledNodes.add(src);
+        while (unSettledNodes.size() > 0) {
+            City node = getMinimum(unSettledNodes);
+            settledNodes.add(node);
+            unSettledNodes.remove(node);
             findMinimalDistances(node);
         }
     }
@@ -50,7 +41,7 @@ public class Algorithm {
             if (getShortestDistance(target) > getShortestDistance(node) + getDistance(node, target)) {
                 distances.put(target, getShortestDistance(node) + getDistance(node, target));
                 predecessors.put(target, node);
-                unvisitedVertexes.add(target);
+                unSettledNodes.add(target);
             }
         }
     }
@@ -68,10 +59,11 @@ public class Algorithm {
     private List<City> getNeighbors(City node) {
         List<City> neighbors = new ArrayList<>();
         for (Road edge : graph.getEdges()) {
-            if (edge.getSrc().equals(node) && !visitedVertexes.contains((edge.getDst()))) {
+            if (edge.getSrc().equals(node) && !settledNodes.contains((edge.getDst()))) {
                 neighbors.add(edge.getDst());
             }
         }
+
         return neighbors;
     }
 
@@ -100,9 +92,6 @@ public class Algorithm {
 
     public LinkedList<City> getPath(City target) {
         LinkedList<City> path = new LinkedList<>();
-        if (predecessors.get(target) == null) {
-            return null;
-        }
         path.add(target);
         while (predecessors.get(target) != null) {
             target = predecessors.get(target);

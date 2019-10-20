@@ -3,7 +3,9 @@ package shipping.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shipping.dao.CargoDAO;
 import shipping.dao.OrderDAO;
+import shipping.dao.impl.CargoDAOImpl;
 import shipping.dto.CargoDTO;
 import shipping.dto.CityDTO;
 import shipping.dto.OrderDTO;
@@ -20,11 +22,14 @@ import shipping.service.api.WaypointService;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private OrderDAO orderDAO;
+
+    private CargoDAO cargoDAO;
 
     @Autowired
     private WaypointService waypointService;
@@ -36,11 +41,19 @@ public class OrderServiceImpl implements OrderService {
         this.orderDAO = orderDAO;
     }
 
+    public void setCargoDAO(CargoDAO cargoDAO) {
+        this.cargoDAO = cargoDAO;
+    }
+
     @Override
     @Transactional
     public void addOrder(Order order) throws CustomServiceException {
         try {
             orderDAO.addOrder(order);
+            for (Cargo cargo :order.getCargoSet()){
+                cargo.setOrder(order);
+                cargoDAO.update(cargo);
+            }
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -72,6 +85,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             return orderDAO.getOrder(id);
         } catch (CustomDAOException e) {
+            e.printStackTrace();
             throw new CustomServiceException(e);
         }
     }
@@ -99,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public double countOrderWeight(OrderDTO orderDTO) {
         double weight = 0;
-        List<CargoDTO> cargoDTOS = orderDTO.getCargoDTOS();
+        Set<CargoDTO> cargoDTOS = orderDTO.getCargoDTOS();
         for (CityDTO cityDTO: orderDTO.getRouteDTO().getCityDTOList()) {
             for (CargoDTO cargo: cargoDTOS) {
                 if (cargo.getSrc().getCity().getName().equals(cityDTO.getName())) {
