@@ -78,15 +78,10 @@ public class OrderController {
             orderConverter = new OrderConverter(modelMapper);
             cargoConverter = new CargoConverter(modelMapper);
             Order order = orderService.getOrderById(id);
-            System.out.println(order);
             Set<Cargo> cargos = order.getCargoSet();
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!");
-
-            System.out.println(cargos);
 
             OrderDTO orderDTO = orderConverter.convertToDto(orderService.getOrderById(id));
             List<CargoDTO> list = cargos.stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
-            System.out.println("list " + list);
             return list;
 
         } catch (CustomServiceException e) {
