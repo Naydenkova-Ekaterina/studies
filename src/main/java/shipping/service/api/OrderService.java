@@ -14,6 +14,6 @@ public interface OrderService {
     Order getOrderById(int id) throws CustomServiceException;
     void removeOrder(int id) throws CustomServiceException;
     Order getOrderByWagon(String id) throws CustomServiceException;
-    double countOrderWeight(OrderDTO order);
+    double countOrderWeight(Order order);
 
 }

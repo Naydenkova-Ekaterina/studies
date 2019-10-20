@@ -121,9 +121,8 @@ public class WagonController {
     public @ResponseBody List<WagonDTO> getSuitableWagons(@PathVariable("id") int id) {
         try {
             wagonConverter = new WagonConverter(modelMapper);
-            orderConverter = new OrderConverter(modelMapper);
             Order order = orderService.getOrderById(id);
-            double orderWeight = orderService.countOrderWeight(orderConverter.convertToDto(order));
+            double orderWeight = orderService.countOrderWeight(order);
             List<WagonDTO> result =  wagonService.getSuitableWagons(orderWeight).stream()
                     .map(wagon -> wagonConverter.convertToDto(wagon))
                     .collect(Collectors.toList());

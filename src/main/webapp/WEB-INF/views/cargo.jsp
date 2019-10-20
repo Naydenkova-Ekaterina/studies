@@ -67,7 +67,7 @@
                     <td>${cargo.status}</td>
                     <td>${cargo.src.city.name}</td>
                     <td>${cargo.dst.city.name}</td>
-                    <td>${cargo.order.id}</td>
+                    <td>${cargo.orderDTO.id}</td>
                     <td>
                         <a href="#editCargoModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                         <a href="#deleteCargoModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="form-group">
                         <label>Source</label>
-                        <form:select path="src" id="options" name="city" class="form-control">
+                        <form:select path="src_id" id="options" name="city" class="form-control">
                             <c:forEach items="${waypoints}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
@@ -119,7 +119,7 @@
 
                     <div class="form-group">
                         <label>Destination</label>
-                        <form:select path="dst" id="options" name="city" class="form-control">
+                        <form:select path="dst_id" id="options" name="city" class="form-control">
                             <c:forEach items="${waypoints}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
@@ -128,16 +128,6 @@
                         </form:select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Order</label>
-                        <form:select path="orderDTO" name="order" class="form-control">
-                            <c:forEach items="${orders}" var="order">
-                                <form:option value="${order.id}">
-                                    <c:out value="${order.id}" />
-                                </form:option>
-                            </c:forEach>
-                        </form:select>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
@@ -180,7 +170,7 @@
                     </div>
                     <div class="form-group">
                         <label>Source</label>
-                        <form:select path="src" name="city" class="form-control" id="UpdSrc">
+                        <form:select path="src_id" name="city" class="form-control" id="UpdSrc">
                             <c:forEach items="${waypoints}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
@@ -191,7 +181,7 @@
 
                     <div class="form-group">
                         <label>Destination</label>
-                        <form:select path="dst" name="city" class="form-control" id="UpdDst">
+                        <form:select path="dst_id" name="city" class="form-control" id="UpdDst">
                             <c:forEach items="${waypoints}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
@@ -200,16 +190,6 @@
                         </form:select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Order</label>
-                        <form:select path="orderDTO" name="order" class="form-control" id="UpdOrder">
-                            <c:forEach items="${orders}" var="order">
-                                <form:option value="${order.id}">
-                                    <c:out value="${order.id}" />
-                                </form:option>
-                            </c:forEach>
-                        </form:select>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
@@ -242,7 +222,7 @@
         </div>
     </div>
 </div>
-<script src="<c:url value="/resources/driver.js" />"></script>
+<script src="<c:url value="/resources/cargo.js" />"></script>
 
 </body>
 

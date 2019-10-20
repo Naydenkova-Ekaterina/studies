@@ -13,6 +13,7 @@ import shipping.enums.WaypointType;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
+import shipping.model.City;
 import shipping.model.Order;
 import shipping.model.Waypoint;
 import shipping.service.api.CargoService;
@@ -21,8 +22,10 @@ import shipping.service.api.WaypointService;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -111,19 +114,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public double countOrderWeight(OrderDTO orderDTO) {
+    public double countOrderWeight(Order order) {
         double weight = 0;
-        Set<CargoDTO> cargoDTOS = orderDTO.getCargoDTOS();
-        for (CityDTO cityDTO: orderDTO.getRouteDTO().getCityDTOList()) {
-            for (CargoDTO cargo: cargoDTOS) {
-                if (cargo.getSrc().getCity().getName().equals(cityDTO.getName())) {
+        double maxWeight = 0;
+
+        Set<Cargo> cargos = order.getCargoSet();
+        List<City> cities = order.getRoute().getCityList().stream().sorted(Comparator.comparing(City::getId)).collect(Collectors.toList());
+
+        for (City city: cities) {
+            for (Cargo cargo: cargos) {
+                if (cargo.getSrc().getCity().getName().equals(city.getName())) {
                     weight += cargo.getWeight();
-                } else if (cargo.getDst().getCity().getName().equals(cityDTO.getName())) {
+                    if (weight > maxWeight) maxWeight = weight;
+                } else if (cargo.getDst().getCity().getName().equals(city.getName())) {
                     weight -= cargo.getWeight();
                 }
             }
         }
-        return weight;
+
+        return maxWeight;
     }
 
 }

@@ -10,6 +10,7 @@ import shipping.exception.CustomServiceException;
 import shipping.model.Wagon;
 import shipping.service.api.WagonService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -115,10 +116,15 @@ public class WagonServiceImpl implements WagonService {
     @Transactional
     public List<Wagon> getSuitableWagons(double requiredCapacity) throws CustomServiceException {
         try {
-            List<Wagon> suitableWagonList = wagonDAO.getSuitableWagons(requiredCapacity);
+            List<String> ids = wagonDAO.getSuitableWagons(requiredCapacity);
+            List<Wagon> suitableWagons = new ArrayList<>();
+
+            for (String id: ids) {
+                suitableWagons.add(wagonDAO.getWagon(id));
+            }
             logger.info("All suitable wagons were found.");
 
-            return suitableWagonList;
+            return suitableWagons;
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }

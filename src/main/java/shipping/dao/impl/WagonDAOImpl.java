@@ -8,6 +8,7 @@ import shipping.exception.CustomDAOException;
 import shipping.model.Wagon;
 
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -75,14 +76,15 @@ public class WagonDAOImpl implements WagonDAO {
     }
 
     @Override
-    public List<Wagon> getSuitableWagons(double requiredCapacity) throws CustomDAOException {
+    public List<String> getSuitableWagons(double requiredCapacity) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            Query query = session.createQuery("select id from Wagon where status = 'serviceable' and capacity >= :requiredCapacity AND order_id IS NULL " );
-            query.setParameter("requiredCapacity", requiredCapacity);
-            List<Wagon> suitableWagons = query.getResultList();
 
-            return suitableWagons;
+            Query query = session.createSQLQuery(" select w.id from shipping.Wagon w, shipping.My_Order o where w.status='serviceable' and w.capacity >= :requiredCapacity and o.wagon_id is null " );
+            query.setParameter("requiredCapacity", requiredCapacity);
+            List<String> ids = query.getResultList();
+
+            return ids;
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }

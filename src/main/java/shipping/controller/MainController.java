@@ -11,4 +11,9 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/suitableWagons")
+    public String suitableWagons(){
+        return "suitableWagons";
+    }
+
 }

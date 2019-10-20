@@ -79,8 +79,6 @@ public class OrderController {
             cargoConverter = new CargoConverter(modelMapper);
             Order order = orderService.getOrderById(id);
             Set<Cargo> cargos = order.getCargoSet();
-
-            OrderDTO orderDTO = orderConverter.convertToDto(orderService.getOrderById(id));
             List<CargoDTO> list = cargos.stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
             return list;
 

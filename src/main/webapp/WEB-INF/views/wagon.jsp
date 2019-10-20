@@ -50,7 +50,7 @@
             </tr>
             </thead>
             <tbody>
-                <c:forEach items="${listWagons}" var="driver">
+                <c:forEach items="${listWagons}" var="cargo">
             <tr>
                 <td>
 							<span class="custom-checkbox">
@@ -58,14 +58,14 @@
 								<label for="checkbox1"></label>
 							</span>
                 </td>
-                <td>${driver.id}</td>
-                <td>${driver.shiftSize}</td>
-                <td>${driver.capacity}</td>
-                <td>${driver.status}</td>
-                <td>${driver.city.name}</td>
+                <td>${cargo.id}</td>
+                <td>${cargo.shiftSize}</td>
+                <td>${cargo.capacity}</td>
+                <td>${cargo.status}</td>
+                <td>${cargo.city.name}</td>
                 <td>
-                    <a href="#editWagonModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                    <a href="#deleteWagonModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                    <a href="#editWagonModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                    <a href="#deleteWagonModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                 </td>
             </tr>
             </c:forEach>

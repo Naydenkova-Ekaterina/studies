@@ -11,6 +11,6 @@ public interface WagonDAO {
     List<Wagon> listWagons() throws CustomDAOException;
     Wagon getWagon(String id) throws CustomDAOException;
     void removeWagon(String id) throws CustomDAOException;
-    List<Wagon> getSuitableWagons(double requiredCapacity) throws CustomDAOException;
+    List<String> getSuitableWagons(double requiredCapacity) throws CustomDAOException;
 
 }
