@@ -112,10 +112,10 @@ public class CargoController {
             Waypoint dst = waypointService.getWaypointById(Integer.parseInt(cargo.getDst_id()));
             cargo.setDst(waypointConverter.convertToDto(dst));
 
-            if (cargo.getOrderDTO_id() != null) {
-                Order order = orderService.getOrderById(Integer.parseInt(cargo.getOrderDTO_id()));
-                cargo.setOrderDTO(orderConverter.convertToDto(order));
-            }
+//            if (cargo.getOrderDTO_id() != null) {
+//                Order order = orderService.getOrderById(Integer.parseInt(cargo.getOrderDTO_id()));
+//                cargo.setOrderDTO(orderConverter.convertToDto(order));
+//            }
             cargoService.addCargo(cargoConverter.convertToEntity(cargo));
 
             return "redirect:/cargoes";

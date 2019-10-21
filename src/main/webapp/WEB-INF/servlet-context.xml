@@ -105,6 +105,7 @@
     <beans:bean id="orderService" class="shipping.service.impl.OrderServiceImpl">
         <beans:property name="orderDAO" ref="orderDAO"></beans:property>
         <beans:property name="cargoDAO" ref="cargoDAO"></beans:property>
+        <beans:property name="routeDAO" ref="routeDAO"></beans:property>
 
     </beans:bean>
     <beans:bean id="waypointService" class="shipping.service.impl.WaypointServiceImpl">

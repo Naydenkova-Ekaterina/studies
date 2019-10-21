@@ -60,8 +60,8 @@
                     <td>${order.completed}</td>
                     <td>${order.wagon.id}</td>
                     <td>
-                        <a href="#editWagonModal" data-toggle="modal"  onclick="seeDetails('${order.id}')">More details</a>
-                        <a href="#editWagonModal" class="edit" data-toggle="modal" onclick="seeDetails('${order.id}')"><i class="material-icons" data-toggle="tooltip" title="More details">&#xE254;</i></a>
+                        <a href="#orderDetailsModal" data-toggle="modal"  onclick="seeDetails('${order.id}')">More details</a>
+                        <a href="#addCargoModal" class="edit" data-toggle="modal" onclick="addCargo('${order.id}')"><i class="material-icons" data-toggle="tooltip" title="More details">&#xE254;</i></a>
                         <a href="#deleteOrderModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${order.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                     </td>
                 </tr>
@@ -104,11 +104,10 @@
     </div>
 </div>
 <!-- Edit Modal HTML -->
-<div id="editWagonModal" class="modal fade">
+<div id="orderDetailsModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <c:url var="addAction" value="/wagon/update" ></c:url>
-            <form:form action="${addAction}"  id="formUpdate"  >
+            <form:form  id="formUpdate"  >
                 <div class="modal-header">
                     <h4 class="modal-title">Edit Wagon</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -117,6 +116,28 @@
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
                     <input type="submit" class="btn btn-info" value="Save">
+                </div>
+            </form:form>
+        </div>
+    </div>
+</div>
+<!-- Add cargo to the order Modal HTML -->
+<div id="addCargoModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form:form  id="formUpdate"  >
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Wagon</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label>Cargo</label>
+                    <select id="addCargoModal_selectAddCargoes"></select>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="button" class="btn btn-info" value="Add" onclick="addCargoToExistingOrder()">
                 </div>
             </form:form>
         </div>

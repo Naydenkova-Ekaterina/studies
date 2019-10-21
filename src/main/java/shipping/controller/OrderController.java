@@ -120,7 +120,6 @@ public class OrderController {
                     .map(order -> orderConverter.convertToDto(order))
                     .collect(Collectors.toList()));
 
-
             return "order";
 
         } catch (CustomServiceException e) {
@@ -150,7 +149,7 @@ public class OrderController {
 
             cargo.setOrder(orderConverter.convertToEntity(orderDTO));
             CargoDTO cargoDTO = cargoConverter.convertToDto(cargo);
-            cargoDTO.setOrderDTO(orderDTO);
+            cargoDTO.setOrderDTO_id(String.valueOf(orderDTO.getId()));
             Set<CargoDTO> cargoDTOS = new HashSet<>();
             cargoDTOS.add(cargoDTO);
 
@@ -159,6 +158,50 @@ public class OrderController {
             orderService.addOrder(orderConverter.convertToEntity(orderDTO));
 
             return "redirect:/orders";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/order/addCargoToExistingOrder/{idOrder}/{idCargo}")
+    public @ResponseBody String addCargoToExistingOrder(@PathVariable("idOrder") int idOrder, @PathVariable("idCargo") int idCargo) {
+        try {
+            orderConverter = new OrderConverter(modelMapper);
+            cargoConverter = new CargoConverter(modelMapper);
+            routeConverter = new RouteConverter(modelMapper);
+            cityConverter = new CityConverter(modelMapper);
+
+            Order order = orderService.getOrderById(idOrder);
+            Set<City> cities = order.getRoute().getCityList();
+            List<CityDTO> cityDTOS = cities.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
+            RouteDTO routeDTO = routeConverter.convertToDto(order.getRoute());
+            routeDTO.setCityDTOList(cityDTOS);
+
+            Cargo cargo = cargoService.getCargoById(idCargo);
+
+            Set<Cargo> cargos = order.getCargoSet();
+            Set<CargoDTO> list = cargos.stream().map(c -> cargoConverter.convertToDto(c)).collect(Collectors.toSet());
+
+            OrderDTO orderDTO = orderConverter.convertToDto(order);
+            CargoDTO cargoDTO = cargoConverter.convertToDto(cargo);
+
+            orderDTO.setCargoDTOS(list);
+
+            cityDTOS.stream().forEach(cityDTO -> System.out.println(cityDTO.getId() + " " + cityDTO.getName()));
+
+            if (!cityDTOS.contains(cargoDTO.getSrc().getCity())) {
+                return "Make a new order for this cargo.";
+            }
+
+            RouteDTO newRouteDTO = routeService.remakeRoute(routeDTO, cargoDTO);
+
+            newRouteDTO.getCityDTOList().stream().forEach(cityDTO -> System.out.println(cityDTO.getId() + " " + cityDTO.getName()));
+            orderDTO.getCargoDTOS().add(cargoDTO);
+            orderDTO.setRouteDTO(newRouteDTO);
+
+            orderService.updateOrder(orderConverter.convertToEntity(orderDTO));
+            return "cargo was added";
+
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }

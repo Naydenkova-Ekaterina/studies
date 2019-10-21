@@ -22,7 +22,7 @@ public class CargoDTO {
 
     private String status;
 
-    private OrderDTO orderDTO;
+//    private OrderDTO orderDTO;
 
     private String orderDTO_id;
 

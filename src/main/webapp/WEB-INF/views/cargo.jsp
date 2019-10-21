@@ -67,7 +67,7 @@
                     <td>${cargo.status}</td>
                     <td>${cargo.src.city.name}</td>
                     <td>${cargo.dst.city.name}</td>
-                    <td>${cargo.orderDTO.id}</td>
+                    <td>${cargo.orderDTO_id}</td>
                     <td>
                         <a href="#editCargoModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                         <a href="#deleteCargoModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>

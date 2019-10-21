@@ -62,6 +62,39 @@ function seeDetails(id) {
     });
 }
 
+var orderToAddCargo;
+
+function addCargo(id) {
+    orderToAddCargo = id;
+    $.ajax({
+        type: "GET",
+        url: CONTEXT_PATH + "/cargo/listFreeCargoes",
+        success: function(data){
+            console.log(data);
+            //var opts = $.parseJSON(data);
+            //console.log(opts);
+            $.each(data, function(i, d) {
+                $('#addCargoModal_selectAddCargoes').append('<option value="' + d.id + '">' + d.id + '</option>');
+            });
+        }
+    });
+}
+
+function addCargoToExistingOrder() {
+
+    id = $('#addCargoModal_selectAddCargoes').val();
+    $.ajax({
+        type: "POST",
+        url: CONTEXT_PATH + "/order/addCargoToExistingOrder/" + orderToAddCargo + "/" + id,
+        success: function(data){
+            console.log(data);
+            //var opts = $.parseJSON(data);
+            //console.log(opts);
+
+        }
+    });
+}
+
 function addOrder() {
    // var CONTEXT_PATH = $('#contextPathHolder').attr('data-contextPath');
 

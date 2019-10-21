@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shipping.dao.CargoDAO;
 import shipping.dao.OrderDAO;
+import shipping.dao.RouteDAO;
 import shipping.dao.impl.CargoDAOImpl;
 import shipping.dto.CargoDTO;
 import shipping.dto.CityDTO;
@@ -18,6 +19,7 @@ import shipping.model.Order;
 import shipping.model.Waypoint;
 import shipping.service.api.CargoService;
 import shipping.service.api.OrderService;
+import shipping.service.api.RouteService;
 import shipping.service.api.WaypointService;
 
 import java.time.LocalTime;
@@ -34,6 +36,8 @@ public class OrderServiceImpl implements OrderService {
 
     private CargoDAO cargoDAO;
 
+    private RouteDAO routeDAO;
+
     @Autowired
     private WaypointService waypointService;
 
@@ -46,6 +50,10 @@ public class OrderServiceImpl implements OrderService {
 
     public void setCargoDAO(CargoDAO cargoDAO) {
         this.cargoDAO = cargoDAO;
+    }
+
+    public void setRouteDAO(RouteDAO routeDAO) {
+        this.routeDAO = routeDAO;
     }
 
     @Override
@@ -66,7 +74,13 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void updateOrder(Order order) throws CustomServiceException {
         try {
+            routeDAO.addRoute(order.getRoute());
             orderDAO.update(order);
+
+            for (Cargo cargo :order.getCargoSet()){
+                cargo.setOrder(order);
+                cargoDAO.update(cargo);
+            }
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }

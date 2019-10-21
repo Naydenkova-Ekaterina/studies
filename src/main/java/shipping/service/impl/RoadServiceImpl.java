@@ -30,6 +30,7 @@ public class RoadServiceImpl implements RoadService {
         }    }
 
     @Override
+    @Transactional
     public double getDistanceBetweenCities(City src, City dst) throws CustomServiceException {
         for (Road road: listRoads()) {
             if (road.getSrc().equals(src) && road.getDst().equals(dst))
