@@ -11,6 +11,7 @@ import shipping.exception.CustomServiceException;
 import shipping.model.*;
 import shipping.service.api.*;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,8 @@ public class DriverController {
 
     private UserService userService;
 
+    private RouteService routeService;
+
     private DriverConverter driverConverter;
 
     private CityConverter cityConverter;
@@ -41,17 +44,21 @@ public class DriverController {
 
     private WaypointService waypointService;
 
+    private RouteConverter routeConverter;
+
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public DriverController(DriverService driverService, CityService cityService, WagonService wagonService, OrderService orderService, UserService userService, WaypointService waypointService) {
+    public DriverController(DriverService driverService, CityService cityService, WagonService wagonService, OrderService orderService,
+                            UserService userService, WaypointService waypointService, RouteService routeService) {
         this.driverService = driverService;
         this.cityService = cityService;
         this.wagonService = wagonService;
         this.orderService = orderService;
         this.userService = userService;
         this.waypointService = waypointService;
+        this.routeService = routeService;
     }
 
     @GetMapping("/drivers")
@@ -115,6 +122,9 @@ public class DriverController {
 
             User user = userService.getUserById(Integer.parseInt(driverDto.getUser_id()));
             driverDto.setUser(userConverter.convertToDto(user));
+
+            DriverShiftDTO driverShiftDTO = new DriverShiftDTO();
+            driverDto.setDriverShiftDTO(driverShiftDTO);
 
             driverService.addDriver(driverConverter.convertToEntity(driverDto));
 
@@ -186,12 +196,25 @@ public class DriverController {
             List<WaypointDTO> waypointDTOList = waypointService.waypointsForOrder(order.getId()).stream()
                     .map(waypoint -> waypointConverter.convertToDto(waypoint))
                     .collect(Collectors.toList());
-            DriverInfoDTO driverInfoDTO = new DriverInfoDTO(personalNumber, wagonId, codrivers, order.getId(), waypointDTOList);
+            DriverInfoDTO driverInfoDTO = new DriverInfoDTO(personalNumber, wagonId, codrivers, String.valueOf(order.getId()), waypointDTOList);
 
 
             model.addAttribute("selDriverInfo", driverInfoDTO);
 
             return "driverInfo";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/driver/updateInfo/{id}")
+    public void updateInfo(@PathVariable("id") int id){
+        try {
+            Driver driver = driverService.getDriverById(id);
+
+
+            driverService.updateDriver(driver);
+
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
@@ -214,5 +237,43 @@ public class DriverController {
         }
     }
 */
+
+    @GetMapping("/driver/getSuitable/{id}")
+    public @ResponseBody List<DriverDto> getSuitableDrivers(@PathVariable("id") int id) {
+        try {
+            driverConverter = new DriverConverter(modelMapper);
+            routeConverter = new RouteConverter(modelMapper);
+
+            Order order = orderService.getOrderById(id);
+            LocalTime time = routeService.getRouteTime(routeConverter.convertToDto(order.getRoute()));
+
+            driverService.getSuitableDrivers(order, time);
+
+            return null;
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/driver/setOrder/{idDriver}/{idOrder}")
+    public void setOrder(@PathVariable("idDriver") int idDriver, @PathVariable("idOrder") int idOrder) {
+        try {
+            driverConverter = new DriverConverter(modelMapper);
+            orderConverter = new OrderConverter(modelMapper);
+
+            Order order = orderService.getOrderById(idOrder);
+            Driver driver = driverService.getDriverById(idDriver);
+
+            driver.setOrder(order);
+            driver.setWagon(order.getWagon());
+
+            order.getDriverSet().add(driver);
+            orderService.updateOrder(order);
+
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
