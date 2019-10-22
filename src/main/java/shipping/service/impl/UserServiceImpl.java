@@ -1,5 +1,8 @@
 package shipping.service.impl;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shipping.dao.UserDAO;
 import shipping.exception.CustomDAOException;
@@ -9,6 +12,7 @@ import shipping.service.api.UserService;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private UserDAO userDAO;
@@ -21,6 +25,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(User user) throws CustomServiceException {
         try {
+            String passwordEncoded = new BCryptPasswordEncoder().encode(user.getPassword());
+            user.setPassword(passwordEncoded);
             userDAO.addUser(user);
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
@@ -65,5 +71,27 @@ public class UserServiceImpl implements UserService {
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public User findUserByEmail(String email) throws CustomServiceException {
+        try {
+            List<User> users = userDAO.listUsers();
+            for (User user : users) {
+                if (user.getEmail().equals(email))
+                    return user;
+            }
+        } catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
+        return null;
+    }
+
+    @Override
+    public org.springframework.security.core.userdetails.User getAuthenticatedUser() {
+        return (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
     }
 }

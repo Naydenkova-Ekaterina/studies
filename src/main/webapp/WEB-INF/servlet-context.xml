@@ -120,6 +120,8 @@
     <beans:bean id="routeService" class="shipping.service.impl.RouteServiceImpl">
         <beans:property name="routeDAO" ref="routeDAO"></beans:property>
     </beans:bean>
+    <beans:bean id="userDetailsService" class="shipping.service.impl.UserDetailsServiceImpl">
+    </beans:bean>
 
 
 

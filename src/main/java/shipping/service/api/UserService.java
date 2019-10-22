@@ -12,5 +12,7 @@ public interface UserService {
     List<User> listUser() throws CustomServiceException;
     User getUserById(int id) throws CustomServiceException;
     void removeUser(int id) throws CustomServiceException;
+    User findUserByEmail(String email) throws CustomServiceException;
+    org.springframework.security.core.userdetails.User getAuthenticatedUser();
 
-}
+    }

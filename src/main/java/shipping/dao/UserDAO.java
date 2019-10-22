@@ -12,5 +12,4 @@ public interface UserDAO {
     List<User> listUsers() throws CustomDAOException;
     User getUser(int id) throws CustomDAOException;
     void removeUser(int id) throws CustomDAOException;
-
 }
