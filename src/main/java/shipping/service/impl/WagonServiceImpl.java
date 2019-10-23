@@ -99,9 +99,9 @@ public class WagonServiceImpl implements WagonService {
 
             if (wagon == null) {
                 throw new CustomServiceException("This wagon doesn't exist.");
-            } else if (!wagon.getOrderSet().isEmpty() ) {
+            } /*else if (!wagon.getOrder().isEmpty() ) {
                 throw new CustomServiceException("Wagon can't be removed, because it has an order."); // need check !
-            } else if (!wagon.getDriverSet().isEmpty()) {
+            } */else if (!wagon.getDriverSet().isEmpty()) {
                 throw new CustomServiceException("Wagon can't be removed, because it has drivers."); // need check !
             }
             wagonDAO.removeWagon(id);

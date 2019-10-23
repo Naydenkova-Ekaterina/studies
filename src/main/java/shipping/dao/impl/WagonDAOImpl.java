@@ -80,7 +80,7 @@ public class WagonDAOImpl implements WagonDAO {
         try {
             Session session = sessionFactory.getCurrentSession();
 
-            Query query = session.createSQLQuery(" select w.id from shipping.Wagon w, shipping.My_Order o where w.status='serviceable' and w.capacity >= :requiredCapacity and o.wagon_id is null " );
+            Query query = session.createSQLQuery(" select w.id from shipping.Wagon w, shipping.My_Order o where w.status='serviceable' and w.capacity >= :requiredCapacity and o.wagon_id is null group by w.id" );
             query.setParameter("requiredCapacity", requiredCapacity);
             List<String> ids = query.getResultList();
 
