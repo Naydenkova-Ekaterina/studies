@@ -30,21 +30,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/","/login.html","/stylesheets/**","/css/**","/images/**", "/index", "/wagons").permitAll()
-                .antMatchers("/cargoes", "/cargo/**").hasAnyRole("admin")
-                .antMatchers("/cargo/**","/BuyTickets").hasAnyRole("employee")
-                .antMatchers("/driver/updateInfo/**").hasAnyRole("driver")
+                .antMatchers("/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
+                .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("admin")
+                .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("EMPLOYEE")
+                .antMatchers("/driver/updateInfo/**").hasAnyRole("DRIVER")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login").loginProcessingUrl("/loginAction").permitAll()
+                .formLogin().loginPage("/login")
+                .loginProcessingUrl("/loginAction")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .successForwardUrl("/")
+                //.failureForwardUrl("/")
+                .permitAll()
                 .and()
-                .logout().logoutSuccessUrl("/login").permitAll()
+                .logout()
+                .permitAll()
                 .permitAll();
     }
 

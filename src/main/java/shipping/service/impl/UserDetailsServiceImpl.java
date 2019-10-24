@@ -23,6 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
         User user = null;
         try {
             user = userService.findUserByEmail(email);
@@ -34,17 +35,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             if (user == null) {
                 throw new UsernameNotFoundException("No users with this email " + email);
             }
-
             String userEmail = user.getEmail();
             String password = user.getPassword();
             String role = user.getRole().toString();
-
-            List<SimpleGrantedAuthority> authList = getAuthorities(role);
-
-            return new org.springframework.security.core.userdetails.User(userEmail, password, true, true, true, true, authList);
-
+            return new org.springframework.security.core.userdetails.User(userEmail, password, true, true, true, true, getAuthorities(role));
     }
-
 
     private List<SimpleGrantedAuthority> getAuthorities(String role) {
         List<SimpleGrantedAuthority> auths = new ArrayList<>();

@@ -75,11 +75,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User findUserByEmail(String email) throws CustomServiceException {
+    public User findUserByEmail(String username) throws CustomServiceException {
         try {
             List<User> users = userDAO.listUsers();
             for (User user : users) {
-                if (user.getEmail().equals(email))
+                System.out.println(user.getEmail());
+                if (user.getEmail().equals(username))
                     return user;
             }
         } catch (CustomDAOException e) {

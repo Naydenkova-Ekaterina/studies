@@ -1,5 +1,5 @@
 package shipping.enums;
 
 public enum UserRole {
-    employee, driver
+    ROLE_EMPLOYEE, ROLE_DRIVER
 }
