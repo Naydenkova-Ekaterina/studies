@@ -9,6 +9,7 @@ import shipping.model.Route;
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public interface RouteService {
 
@@ -24,6 +25,6 @@ public interface RouteService {
 
     double countDistanceForRoute(List<CityDTO> linkedList) throws CustomServiceException;
 
-    LocalTime getRouteTime(RouteDTO routeDTO) throws CustomServiceException;
+    LocalTime getRouteTime(Set<City> cities) throws CustomServiceException;
 
 }

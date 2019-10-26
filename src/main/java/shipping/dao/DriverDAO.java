@@ -14,6 +14,5 @@ public interface DriverDAO {
     Driver getDriver(int id) throws CustomDAOException;
     void removeDriver(int id) throws CustomDAOException;
     List<Driver> getAvailableDrivers(City city) throws CustomDAOException;
-    List<Driver> getSuitableDrivers() throws CustomDAOException;
 
 }

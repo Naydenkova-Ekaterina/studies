@@ -13,6 +13,8 @@ import shipping.service.api.*;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -114,14 +116,16 @@ public class DriverController {
             City city = cityService.getCityById(Integer.parseInt(driverDto.getCity_id()));
             driverDto.setCity(cityConverter.convertToDto(city));
 
-            Wagon wagon = wagonService.getWagonById(driverDto.getWagon_id());
-            driverDto.setWagon(wagonConverter.convertToDto(wagon));
+//            if (!driverDto.getWagon_id().equals("null")) {
+//                Wagon wagon = wagonService.getWagonById(driverDto.getWagon_id());
+//                driverDto.setWagon(wagonConverter.convertToDto(wagon));
+//            }
+//
+//            Order order = orderService.getOrderById(Integer.parseInt(driverDto.getOrder_id()));
+//            driverDto.setOrder(orderConverter.convertToDto(order));
 
-            Order order = orderService.getOrderById(Integer.parseInt(driverDto.getOrder_id()));
-            driverDto.setOrder(orderConverter.convertToDto(order));
-
-            User user = userService.getUserById(Integer.parseInt(driverDto.getUser_id()));
-            driverDto.setUser(userConverter.convertToDto(user));
+//            User user = userService.getUserById(Integer.parseInt(driverDto.getUser_id()));
+//            driverDto.setUser(userConverter.convertToDto(user));
 
             DriverShiftDTO driverShiftDTO = new DriverShiftDTO();
             driverDto.setDriverShiftDTO(driverShiftDTO);
@@ -245,11 +249,15 @@ public class DriverController {
             routeConverter = new RouteConverter(modelMapper);
 
             Order order = orderService.getOrderById(id);
-            LocalTime time = routeService.getRouteTime(routeConverter.convertToDto(order.getRoute()));
 
-            driverService.getSuitableDrivers(order, time);
+            Set<City> cities = order.getRoute().getCityList();
 
-            return null;
+            LocalTime time = routeService.getRouteTime(cities);
+
+            Map<Driver, LocalTime> map = driverService.getSuitableDrivers(order, time);
+            List<DriverDto> result = map.keySet().stream().map(driver -> driverConverter.convertToDto(driver)).collect(Collectors.toList());
+
+            return result;
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }

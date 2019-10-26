@@ -144,7 +144,6 @@ public class RouteServiceImpl implements RouteService {
 
         double min = Double.MAX_VALUE;
         for (double key: map.keySet()) {
-            System.out.println(map.keySet());
             if (key < min) {
                 min = key;
             }
@@ -171,10 +170,10 @@ public class RouteServiceImpl implements RouteService {
         return result;
     }
 
-    private LocalTime calculateRouteTime(double distance, RouteDTO routeDTO) {
+    private LocalTime calculateRouteTime(double distance, List<CityDTO> cities) {
 
         LocalTime routeTime ;
-        int countRoutePoints = routeDTO.getCityDTOList().size();
+        int countRoutePoints = cities.size();
         int hours = (int)distance / 60;
         int min = (int) distance % 60;
         routeTime = LocalTime.of(hours+countRoutePoints, min, 0);
@@ -182,9 +181,12 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public LocalTime getRouteTime(RouteDTO routeDTO) throws CustomServiceException  {
-        double distance = countDistanceForRoute(routeDTO.getCityDTOList());
-        LocalTime time = calculateRouteTime(distance, routeDTO);
+    public LocalTime getRouteTime(Set<City> cities) throws CustomServiceException  {
+        cityConverter = new CityConverter(modelMapper);
+
+        List<CityDTO> listConverted = cities.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
+        double distance = countDistanceForRoute(listConverted);
+        LocalTime time = calculateRouteTime(distance, listConverted);
         return time;
     }
 

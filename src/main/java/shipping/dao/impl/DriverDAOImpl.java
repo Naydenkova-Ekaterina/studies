@@ -80,7 +80,7 @@ public class DriverDAOImpl implements DriverDAO {
         try {
             Session session = sessionFactory.getCurrentSession();
 
-            Query query = session.createQuery("SELECT id FROM Driver WHERE order_id IS NULL AND city = :city");
+            Query query = session.createQuery("FROM Driver WHERE order_id IS NULL AND city = :city");
             query.setParameter("city", city);
 
             List<Driver> driverList = query.getResultList();
@@ -92,15 +92,4 @@ public class DriverDAOImpl implements DriverDAO {
         }
     }
 
-    @Override
-    public List<Driver> getSuitableDrivers() throws CustomDAOException {
-        try {
-            Session session = sessionFactory.getCurrentSession();
-
-            return null;
-
-        } catch (Exception e) {
-            throw new CustomDAOException(e);
-        }
-    }
 }

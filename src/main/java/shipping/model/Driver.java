@@ -26,7 +26,7 @@ public class Driver {
 
     private String surname;
 
-    //private LocalTime workedHours;
+    private LocalTime workedHours;
 
     @Enumerated(value = EnumType.STRING)
     private DriverStatus status;
@@ -43,9 +43,9 @@ public class Driver {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne
-    @JoinColumn(name = "driverShift_id")
-    private DriverShift driverShift;
+//    @OneToOne
+//    @JoinColumn(name = "driverShift_id")
+//    private DriverShift driverShift;
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -15,7 +15,9 @@ import shipping.model.Order;
 import shipping.model.Wagon;
 import shipping.service.api.DriverService;
 
-import java.time.LocalTime;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,23 +117,40 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public Map<Driver, LocalTime> getSuitableDrivers(Order order) throws CustomServiceException {
+    public Map<Driver, LocalTime> getSuitableDrivers(Order order, LocalTime orderTime) throws CustomServiceException {
         try {
             Map<Driver, LocalTime> driversHoursMap = new HashMap<>();
 
             Wagon wagonForThisOrder = order.getWagon();
             List<Driver> availableDriversInTheSameCity = driverDAO.getAvailableDrivers(wagonForThisOrder.getCity());
 
+         //   LocalTime wagonShiftSize = wagonForThisOrder.getShiftSize(); // сколько часов длится одна смена
+          //  int numberOfShifts = orderTime.getHour() / wagonShiftSize.getHour(); // сколько смен нужно для доставки заказа
+
+            LocalDate now = LocalDate.now();// текущая дата
+            LocalDate firstDayOfNextMonth = now.with(TemporalAdjusters.firstDayOfNextMonth());  // дата 1-го дня след.месяца
+            int hoursUntilMonthEnd = Period.between(now, firstDayOfNextMonth).getDays()*24;
+
             for (Driver driver: availableDriversInTheSameCity) {
-                int sumHours = 0;
-                // do smth
-                if (sumHours <= 176) {
-                    driversHoursMap.put(driver, LocalTime.of(sumHours,0));
+                if (driver.getWorkedHours() == null) { // если водитель ещё нигде не работал
+                    driversHoursMap.put(driver, LocalTime.of(0, 0)); // добавляем
+                    continue;
                 }
+                LocalTime workedHours = driver.getWorkedHours(); // сколько отработано уже часов у водителя
+
+                LocalTime hoursToWorkThisMonth = LocalTime.of(176, 0).minus(workedHours.getHour(), ChronoUnit.HOURS); // сколько осталось часов работать в этом месяце
+
+
+                // если часов до конца месяца больше, чем рабочих часов, а время в пути меньше, то добавляем
+                if (hoursUntilMonthEnd >= hoursToWorkThisMonth.getHour() && hoursToWorkThisMonth.getHour() >= orderTime.getHour() ||
+                        now.atTime(LocalTime.now()).plusDays(orderTime.getHour()/24).isAfter(firstDayOfNextMonth.atStartOfDay())) {
+                    driversHoursMap.put(driver, workedHours);
+                    continue;
+                }
+                    // to do what?
+                    // если часов до конца месяца меньше чем время в пути
+
             }
-
-
-            List<DriverShift> driverShifts = driverShiftDAO.getDriverShiftInThisMonth(availableDriversInTheSameCity);
 
             return driversHoursMap;
         } catch (CustomDAOException e) {

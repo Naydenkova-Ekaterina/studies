@@ -44,7 +44,6 @@
                 <beans:value>shipping.model.City</beans:value>
                 <beans:value>shipping.model.Driver</beans:value>
                 <beans:value>shipping.model.User</beans:value>
-                <beans:value>shipping.model.DriverShift</beans:value>
                 <beans:value>shipping.model.Road</beans:value>
                 <beans:value>shipping.model.Route</beans:value>
 
