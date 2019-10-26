@@ -74,6 +74,22 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void updateOrder(Order order) throws CustomServiceException {
         try {
+            //routeDAO.addRoute(order.getRoute());
+            orderDAO.update(order);
+
+            for (Cargo cargo :order.getCargoSet()){
+                cargo.setOrder(order);
+                cargoDAO.update(cargo);
+            }
+        } catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderAfterChangingRoute(Order order) throws CustomServiceException {
+        try {
             routeDAO.addRoute(order.getRoute());
             orderDAO.update(order);
 

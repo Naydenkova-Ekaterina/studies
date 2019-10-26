@@ -26,7 +26,7 @@ public class Order {
 
     private boolean isCompleted;
 
-    @ManyToOne
+    @OneToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "wagon_id")
     private Wagon wagon;
 

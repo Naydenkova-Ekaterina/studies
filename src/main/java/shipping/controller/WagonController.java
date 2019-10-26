@@ -132,4 +132,23 @@ public class WagonController {
         }
     }
 
+    @PostMapping("/wagon/setOrder/{idWagon}/{idOrder}")
+    public void setOrder(@PathVariable("idWagon") String idWagon, @PathVariable("idOrder") int idOrder) {
+        try {
+            wagonConverter = new WagonConverter(modelMapper);
+            orderConverter = new OrderConverter(modelMapper);
+
+            Order order = orderService.getOrderById(idOrder);
+            Wagon wagon = wagonService.getWagonById(idWagon);
+
+            //wagon.se
+
+            order.setWagon(wagon);
+            orderService.updateOrder(order);
+
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

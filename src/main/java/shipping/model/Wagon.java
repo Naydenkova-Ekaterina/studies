@@ -35,8 +35,8 @@ public class Wagon {
     @OneToMany(mappedBy = "wagon", fetch = FetchType.EAGER)
     private Set<Driver> driverSet;
 
-    @OneToMany(mappedBy = "wagon", fetch = FetchType.EAGER)
-    private Set<Order> orderSet;
+//    @OneToMany(mappedBy = "wagon", fetch = FetchType.EAGER)
+//    private Order order;
 
 
 }

@@ -199,7 +199,7 @@ public class OrderController {
             orderDTO.getCargoDTOS().add(cargoDTO);
             orderDTO.setRouteDTO(newRouteDTO);
 
-            orderService.updateOrder(orderConverter.convertToEntity(orderDTO));
+            orderService.updateOrderAfterChangingRoute(orderConverter.convertToEntity(orderDTO));
             return "cargo was added";
 
         } catch (CustomServiceException e) {
