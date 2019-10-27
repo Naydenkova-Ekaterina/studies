@@ -38,6 +38,6 @@ public class DriverDto {
 
     private UserDTO user;
 
-    private DriverShiftDTO driverShiftDTO;
+    //private DriverShiftDTO driverShiftDTO;
 
 }

@@ -29,7 +29,4 @@ public class WagonDTO {
     @JsonIgnore
     private Set<DriverDto> driverSet;
 
-    @JsonIgnore
-    private Set<OrderDTO> orderSet;
-
 }

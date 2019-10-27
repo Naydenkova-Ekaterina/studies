@@ -127,8 +127,8 @@ public class DriverController {
 //            User user = userService.getUserById(Integer.parseInt(driverDto.getUser_id()));
 //            driverDto.setUser(userConverter.convertToDto(user));
 
-            DriverShiftDTO driverShiftDTO = new DriverShiftDTO();
-            driverDto.setDriverShiftDTO(driverShiftDTO);
+//            DriverShiftDTO driverShiftDTO = new DriverShiftDTO();
+//            driverDto.setDriverShiftDTO(driverShiftDTO);
 
             driverService.addDriver(driverConverter.convertToEntity(driverDto));
 
@@ -275,8 +275,7 @@ public class DriverController {
             driver.setOrder(order);
             driver.setWagon(order.getWagon());
 
-            order.getDriverSet().add(driver);
-            orderService.updateOrder(order);
+            driverService.updateDriver(driver);
 
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
