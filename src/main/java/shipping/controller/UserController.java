@@ -2,6 +2,8 @@ package shipping.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,11 +28,12 @@ public class UserController {
     }
 
     @PostMapping("/user/add")
-    public void addUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Void> addUser(@RequestBody UserDTO userDTO) {
         try {
             userConverter = new UserConverter(modelMapper);
-            System.out.println(userDTO.getEmail());
+
             userService.addUser(userConverter.convertToEntity(userDTO));
+            return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);

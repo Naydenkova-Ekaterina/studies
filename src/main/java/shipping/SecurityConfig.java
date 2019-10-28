@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/suitableWagons","/wagon/getSuitable/**","/wagon/setOrder/**","/orders/listOrdersDTO","/driver/getSuitable/**", "/suitableDrivers", "/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
+                .antMatchers("/driver/registerAdd/**","/cities/listCitiesDTO","/suitableWagons","/wagon/getSuitable/**","/wagon/setOrder/**","/orders/listOrdersDTO","/driver/getSuitable/**", "/suitableDrivers", "/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
                 .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("admin")
                 .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("EMPLOYEE")
                 .antMatchers("/driver/updateInfo/**").hasAnyRole("DRIVER")

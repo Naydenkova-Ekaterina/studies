@@ -2,6 +2,8 @@ package shipping.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -133,6 +135,26 @@ public class DriverController {
             driverService.addDriver(driverConverter.convertToEntity(driverDto));
 
             return "redirect:/drivers";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/driver/registerAdd/{email}")
+    public ResponseEntity<Void> addUser(@RequestBody DriverDto driverDto, @PathVariable("email") String email) {
+        try {
+            driverConverter = new DriverConverter(modelMapper);
+            userConverter = new UserConverter(modelMapper);
+            cityConverter = new CityConverter(modelMapper);
+            City city = cityService.getCityById(Integer.parseInt(driverDto.getCity_id()));
+            driverDto.setCity(cityConverter.convertToDto(city));
+            UserDTO user = userConverter.convertToDto(userService.findUserByEmail(email));
+
+            driverDto.setUser(user);
+            driverService.addDriver(driverConverter.convertToEntity(driverDto));
+            return new ResponseEntity<>(HttpStatus.OK);
+
+
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
