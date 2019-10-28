@@ -208,22 +208,32 @@ public class DriverController {
         }
     }
 
-    @GetMapping("/driver/info/{id}")
-    public String info(@PathVariable("id") int id, Model model) {
+    @GetMapping("/driver/info")
+    public String info(Model model) {
         try {
             waypointConverter = new WaypointConverter(modelMapper);
-            Driver driver = driverService.getDriverById(id);
+            Driver driver = driverService.getAuthenticatedDriver();
+
             int personalNumber = driver.getId();
-            String wagonId = driver.getWagon().getId();
+            String wagonId;
+            List<Integer> codrivers;
+            String orderId;
+            List<WaypointDTO> waypointDTOList;
+            if (driver.getWagon() != null) {
+                wagonId = driver.getWagon().getId();
+                codrivers = driverService.driversByWagon(wagonId);
+                orderId = String.valueOf(orderService.getOrderByWagon(wagonId).getId());
+                waypointDTOList = waypointService.waypointsForOrder(Integer.valueOf(orderId)).stream()
+                        .map(waypoint -> waypointConverter.convertToDto(waypoint))
+                        .collect(Collectors.toList());
+            } else {
+                wagonId = null;
+                codrivers = null;
+                orderId = null;
+                waypointDTOList = null;
+            }
 
-            List<Integer> codrivers = driverService.driversByWagon(wagonId);
-
-            Order order = orderService.getOrderByWagon(wagonId);
-            List<WaypointDTO> waypointDTOList = waypointService.waypointsForOrder(order.getId()).stream()
-                    .map(waypoint -> waypointConverter.convertToDto(waypoint))
-                    .collect(Collectors.toList());
-            DriverInfoDTO driverInfoDTO = new DriverInfoDTO(personalNumber, wagonId, codrivers, String.valueOf(order.getId()), waypointDTOList);
-
+            DriverInfoDTO driverInfoDTO = new DriverInfoDTO(personalNumber, wagonId, codrivers, orderId, waypointDTOList);
 
             model.addAttribute("selDriverInfo", driverInfoDTO);
 

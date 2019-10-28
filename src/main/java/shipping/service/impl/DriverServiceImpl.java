@@ -2,6 +2,7 @@ package shipping.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shipping.dao.DriverDAO;
@@ -14,6 +15,7 @@ import shipping.model.DriverShift;
 import shipping.model.Order;
 import shipping.model.Wagon;
 import shipping.service.api.DriverService;
+import shipping.service.api.UserService;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -29,6 +31,9 @@ public class DriverServiceImpl implements DriverService {
     private Logger logger = LoggerFactory.getLogger(DriverServiceImpl.class);
 
     private DriverDAO driverDAO;
+
+    @Autowired
+    private UserService userService;
 
     private DriverShiftDAO driverShiftDAO;
 
@@ -157,4 +162,24 @@ public class DriverServiceImpl implements DriverService {
             throw new CustomServiceException(e);
         }
     }
+
+
+    @Transactional
+    public Driver getAuthenticatedDriver() throws CustomServiceException {
+        org.springframework.security.core.userdetails.User user = userService.getAuthenticatedUser();
+        try {
+            List<Driver> drivers = driverDAO.listDrivers();
+            for (Driver driver : drivers) {
+                if (driver.getUser() != null && user.getUsername().equals(driver.getUser().getEmail())) {
+                    return driver;
+                }
+            }
+        }
+        catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
+        return new Driver();
+    }
+
+
 }

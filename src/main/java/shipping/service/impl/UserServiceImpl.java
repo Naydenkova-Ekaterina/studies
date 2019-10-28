@@ -79,9 +79,10 @@ public class UserServiceImpl implements UserService {
         try {
             List<User> users = userDAO.listUsers();
             for (User user : users) {
-                System.out.println(user.getEmail());
-                if (user.getEmail().equals(username))
+                if (user.getEmail().equals(username)) {
                     return user;
+
+                }
             }
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);

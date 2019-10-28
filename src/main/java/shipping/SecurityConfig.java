@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/driver/registerAdd/**","/cities/listCitiesDTO","/suitableWagons","/wagon/getSuitable/**","/wagon/setOrder/**","/orders/listOrdersDTO","/driver/getSuitable/**", "/suitableDrivers", "/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
                 .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("admin")
                 .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("EMPLOYEE")
-                .antMatchers("/driver/updateInfo/**").hasAnyRole("DRIVER")
+                .antMatchers("/driver/**","/driver/info","/driver/updateInfo/**").hasAnyRole("DRIVER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login")
