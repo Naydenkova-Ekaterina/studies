@@ -1,9 +1,9 @@
 package shipping.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shipping.controller.MainController;
 import shipping.dao.WagonDAO;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class WagonServiceImpl implements WagonService {
 
-    private Logger logger = LoggerFactory.getLogger(WagonServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(WagonServiceImpl.class);
 
     private WagonDAO wagonDAO;
 
@@ -28,9 +28,6 @@ public class WagonServiceImpl implements WagonService {
     @Transactional
     public void addWagon(Wagon wagon) throws CustomServiceException {
 
-        //validate fields ?
-        validate(wagon);
-
         try {
             Wagon checkWagon = wagonDAO.getWagon(wagon.getId());
 
@@ -40,22 +37,10 @@ public class WagonServiceImpl implements WagonService {
 
             wagonDAO.addWagon(wagon);
 
-            logger.info("New wagon with id = " + wagon.getId() + " was created.");
+            logger.debug("New wagon with id = " + wagon.getId() + " was created.");
 
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
-        }
-    }
-
-    public void validate(Wagon wagon) throws CustomServiceException{
-        if (wagon.getId() == null || wagon.getId().isEmpty() || !wagon.getId().matches("[a-zA-Z]{2}[0-9]{5}")) {
-            throw new CustomServiceException("Id is not correct.");
-        } else if (wagon.getShiftSize() == null) {
-            throw new CustomServiceException("Shift size wasn't set.");
-        } else if (wagon.getCapacity() <= 0) {
-            throw new CustomServiceException("Capacity should be positive.");
-        } else if (wagon.getCity() == null) {
-            throw new CustomServiceException("City wasn't set.");
         }
     }
 
@@ -64,7 +49,7 @@ public class WagonServiceImpl implements WagonService {
     public void updateWagon(Wagon wagon) throws CustomServiceException {
         try {
             wagonDAO.update(wagon);
-            logger.info("Wagon with id = " + wagon.getId() + " was updated.");
+            logger.debug("Wagon with id = " + wagon.getId() + " was updated.");
 
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
@@ -105,7 +90,7 @@ public class WagonServiceImpl implements WagonService {
                 throw new CustomServiceException("Wagon can't be removed, because it has drivers."); // need check !
             }
             wagonDAO.removeWagon(id);
-            logger.info("Wagon with id = " + wagon.getId() + " was removed.");
+            logger.debug("Wagon with id = " + wagon.getId() + " was removed.");
 
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
@@ -122,7 +107,7 @@ public class WagonServiceImpl implements WagonService {
             for (String id: ids) {
                 suitableWagons.add(wagonDAO.getWagon(id));
             }
-            logger.info("All suitable wagons were found.");
+            logger.debug("All suitable wagons were found.");
 
             return suitableWagons;
         } catch (CustomDAOException e) {

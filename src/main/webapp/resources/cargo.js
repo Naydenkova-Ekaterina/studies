@@ -30,13 +30,17 @@ function setIdForUpdate(id) {
     var CONTEXT_PATH = $('#contextPathHolder').attr('data-contextPath');
 
     $.get(CONTEXT_PATH+ "/cargo/edit/" + id, function(data, status){
+        console.log(data);
+        console.log(data.src.city.id);
+        console.log(data.dst.city.id);
+
         $('#UpdReg').val(data.id);
         $('#UpdShift').val(data.name);
         $('#UpdCap').val(data.weight);
         $('#UpdStat').val(data.status);
-        $('#UpdSrc').val(data.src.city.name);
-        $('#UpdDst').val(data.dst.city.name);
-        $('#UpdOrder').val(data.order.id);
+        $('#UpdSrc').val(data.src.id);
+        $('#UpdDst').val(data.dst.id);
+     //   $('#UpdOrder').val(data.order.id);
 
 
     });

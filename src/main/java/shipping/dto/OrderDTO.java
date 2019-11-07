@@ -25,7 +25,9 @@ public class OrderDTO {
 
     private String cargoDTO_id;
 
-    private RouteDTO routeDTO;
+    //private RouteDTO routeDTO;
+
+    private String way;
 
     @JsonIgnore
     private List<DriverDto> driverSet;

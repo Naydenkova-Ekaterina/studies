@@ -1,26 +1,4 @@
-$(document).ready(function() {
-    $('[data-toggle="tooltip"]').tooltip();
 
-    var checkbox = $('table tbody input[type="checkbox"]');
-    $("#selectAll").click(function () {
-        if (this.checked) {
-            checkbox.each(function () {
-                this.checked = true;
-            });
-        } else {
-            checkbox.each(function () {
-                this.checked = false;
-            });
-        }
-    });
-    checkbox.click(function () {
-        if (!this.checked) {
-            $("#selectAll").prop("checked", false);
-        }
-    });
-
-
-});
 
 CONTEXT_PATH = $('#contextPathHolder').attr('data-contextPath');
 
@@ -30,6 +8,8 @@ function seeDetails(id) {
         url: CONTEXT_PATH + "/orders/getOrderRoute/" + id,
         success: function(data){
             console.log(data);
+            $('#orderRoute').html(data);
+            $('#orderRoute').css({'font-size':'18px'})
            // var opts = $.parseJSON(data);
             // $.each(opts, function(i, d) {
             //     $('#orderSelect').append('<option value="' + d.id + '">' + d.id + '</option>');
@@ -42,10 +22,16 @@ function seeDetails(id) {
         url: CONTEXT_PATH + "/orders/getOrderCargoes/" + id,
         success: function(data){
             console.log(data);
-            // var opts = $.parseJSON(data);
-            // $.each(opts, function(i, d) {
-            //     $('#orderSelect').append('<option value="' + d.id + '">' + d.id + '</option>');
-            // });
+            $("#cargoes_table").html("");
+
+
+            var trHTML = '';
+            $.each(data, function (i, item) {
+                trHTML += '<tr><td>' + '</td><td>' + item.id + '</td><td>' + item.name + '</td><td>'
+                    + item.weight +'</td><td>' + item.status + '</td><td>' + item.src.city.name + '</td><td>' + item.dst.city.name + '</td></tr>';
+            });
+            $('#cargoes_table').append(trHTML);
+
         }
     });
 
@@ -54,10 +40,18 @@ function seeDetails(id) {
         url: CONTEXT_PATH + "/orders/getOrderDrivers/" + id,
         success: function(data){
             console.log(data);
-           // var opts = $.parseJSON(data);
-            // $.each(opts, function(i, d) {
-            //     $('#orderSelect').append('<option value="' + d.id + '">' + d.id + '</option>');
-            // });
+            $("#drivers_table").html("");
+
+
+            var trHTML = '';
+            $.each(data, function (i, item) {
+                trHTML += '<tr><td>' + '</td><td>' + item.id + '</td><td>' + item.name + '</td><td>'
+                    + item.surname +'</td><td>' + item.status + '</td><td>' + item.city.name + '</td>'
+                    // item.wagon.id + '</td><td>' + item.order.id + '</td><td>' + item.user.id + '</td>'
+                     +'</tr>';
+            });
+            $('#drivers_table').append(trHTML);
+
         }
     });
 }
@@ -116,21 +110,3 @@ function setIdForRemove(id) {
     document.getElementById('formRemove').action += id;
 }
 
-function setIdForUpdate(id) {
-
-
-
-    $.get(CONTEXT_PATH+ "/driver/edit/" + id, function(data, status){
-        $('#UpdReg').val(data.id);
-        $('#UpdShift').val(data.name);
-        $('#UpdCap').val(data.surname);
-        $('#UpdStat').val(data.status);
-        $('#UpdCity').val(data.city.id);
-        $('#UpdWagon').val(data.wagon.id);
-        $('#UpdOrder').val(data.order.id);
-        $('#UpdUser').val(data.user.id);
-
-
-    });
-
-}

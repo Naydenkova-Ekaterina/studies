@@ -5,32 +5,27 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Login</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-with-addons.min.js"></script>
-    <script src="https://npmcdn.com/react-dom@15.3.0/dist/react-dom.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <title>Suitable drivers</title>
 
+    <style>
+        <%@include file='/resources/css/headerStyle.css' %>
+        <%@include file='/resources/css/buttonStyle.css' %>
+
+        <%@include file='/resources/wagonStyle.css' %>
+    </style>
+
+    <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
-
-    <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
-
-
-        <style>
-            <%@include file='/resources/css/headerStyle.css' %>
-            <%@include file='/resources/css/main.css' %>
-
-        </style>
-
 </head>
 <body>
+
+
 
 <header class="myheader">
     <h1 class="logo"><a class="headerNav" href="${pageContext.request.contextPath}/">Home</a></h1>
@@ -54,17 +49,54 @@
     </label>
 </header>
 
-<div id="app"></div>
+<div class="content">
 
 
-<%--<c:url var="addAction" value="/loginAction" ></c:url>--%>
-<%--<form:form action="${addAction}"  >--%>
-<%--    <input type="text" name="email">--%>
-<%--    <input type="text" name="password">--%>
-<%--    <input type="submit">--%>
-<%--</form:form>--%>
+    <div class="container">
 
-<script type="text/babel" src="<c:url value="/resources/js/reg.js" />"></script>
+        <form>
+
+            <select id="orderSelect" class="select">
+            </select>
+            <div class="button-2">
+                <div class="eff-2"></div>
+                <a href="#" onclick="getSuitableDrivers()">Find suitable drivers</a>
+            </div>
+        </form>
+
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2><b>Drivers</b></h2>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover" id="records_table">
+                <thead>
+                <tr>
+                    <th>
+							<span class="custom-checkbox">
+							</span>
+                    </th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Status</th>
+                    <th>City</th>
+<%--                    <th>Wagon</th>--%>
+<%--                    <th>Order</th>--%>
+<%--                    <th>User</th>--%>
+
+                </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script src="<c:url value="/resources/suitableDrivers.js" />"></script>
+
 
 </body>
 </html>

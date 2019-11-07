@@ -42,14 +42,17 @@ class MyForm extends React.Component {
             data: JSON.stringify(user),
             contentType:' application/json',
             success: function () {
+                console.log("user add success")
                 if (data.userRole == "ROLE_DRIVER") {
 
                     var driver = {
                         name: data.name,
                         surname: data.surname,
+                        workedHours: "00:00",
                         status: data.status,
                         city_id: data.city
                     };
+                    console.log(driver);
 
                     fetch(CONTEXT_PATH + '/driver/registerAdd/' + user.email, {
                         method: 'POST',
@@ -67,36 +70,119 @@ class MyForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label htmlFor="email">Enter email</label>
-                <input id="email" name="email" type="text" />
 
-                <label htmlFor="password">Enter your password</label>
-                <input id="password" name="password" type="password" />
-                <select name="userRole" value={this.state.role} onChange={this.onChangeRole}>
-                    <option value="ROLE_EMPLOYEE">Employee</option>
-                    <option value="ROLE_DRIVER">Driver</option>
-                </select>
-<div id="ifDriver" style={{display:'none'}}>
-                <label className="forDrivers">Name</label>
-                <input className="forDrivers" name="name" type="text" />
-                <label className="forDrivers" >Surname</label>
-                <input className="forDrivers" name="surname" type="text" />
-                <label className="forDrivers">Status</label>
-                <select className="forDrivers" name="status" >
-                    <option value="rest">Rest</option>
-                    <option value="shift">Shift</option>
-                    <option value="behindTheWheel">Behind the wheel</option>
-                </select>
 
-                <label className="forDrivers">City</label>
-                <select className="forDrivers" id="idCities" name="city" >
 
-                </select>
-</div>
+            <div className = "limiter" >
+            < div className = "container-login100" >
+            < div className = "wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33" >
+            < form className = "login100-form validate-form flex-sb flex-w" onSubmit={this.handleSubmit}>
+            < span className = "login100-form-title p-b-53" >Sign Up</span>
 
-                <button>CREATE ACCOUNT</button>
-            </form>
+        {/*<a href="#" className="btn-face m-b-20">*/}
+        {/*    <i className="fa fa-facebook-official"></i>Facebook</a>*/}
+
+        {/*<a href = "#" className = "btn-google m-b-20" >*/}
+        {/*    <img src = "images/icons/icon-google.png" alt = "GOOGLE" />Google</a>*/}
+
+        <div className="p-t-31 p-b-9">
+						<span className="txt1">
+							Email
+						</span>
+        </div>
+        < div className = "wrap-input100 validate-input" >
+            < input className = "input100" type = "text" id="email" name="email" />
+            < span className = "focus-input100" > </span>
+    </div>
+
+    <div className="p-t-13 p-b-9">
+    <span className="txt1">Password</span>
+    </div>
+
+    <div className="wrap-input100 validate-input" data-validate = "Password is required">
+    <input className="input100" type="password" name="password" type="password" />
+    <span className="focus-input100"></span>
+    </div>
+
+                <div className="p-t-13 p-b-9">
+                    <span className="txt1">Role</span>
+                </div>
+                <div className="wrap-input100 validate-input" data-validate = "Password is required">
+                    <select className="input100" name="userRole" value={this.state.role} onChange={this.onChangeRole}>
+                        <option value="ROLE_EMPLOYEE">Employee</option>
+                        <option value="ROLE_DRIVER">Driver</option>
+                    </select>
+                    <span className="focus-input100"></span>
+                </div>
+
+
+
+                <div id="ifDriver" style={{display:'none'}}>
+                    <div className="p-t-13 p-b-9 forDrivers">
+                        <span className="txt1">Name</span>
+                    </div>
+                    <div className="wrap-input100 validate-input forDrivers" >
+                        <input className="input100" name="name" type="text" />
+                        <span className="focus-input100"></span>
+                    </div>
+
+                    <div className="p-t-13 p-b-9 forDrivers">
+                        <span className="txt1">Surname</span>
+                    </div>
+                    <div className="wrap-input100 validate-input forDrivers" >
+                        <input className="input100" name="surname" type="text" />
+                        <span className="focus-input100"></span>
+                    </div>
+
+                    <div className="p-t-13 p-b-9 forDrivers">
+                        <span className="txt1">Status</span>
+                    </div>
+                    <div className="wrap-input100 validate-input forDrivers" >
+                        <select className="input100" name="status" >
+                            <option value="rest">Rest</option>
+                            <option value="shift">Shift</option>
+                            <option value="behindTheWheel">Behind the wheel</option>
+                        </select>
+                        <span className="focus-input100"></span>
+                    </div>
+
+
+                    <div className="p-t-13 p-b-9 forDrivers">
+                        <span className="txt1">City</span>
+                    </div>
+                    <div className="wrap-input100 validate-input forDrivers" >
+                        <select className="input100" id="idCities" name="city" >
+                        </select>
+                        <span className="focus-input100"></span>
+                    </div>
+
+
+                </div>
+
+
+
+
+
+    <div className="container-login100-form-btn m-t-17">
+    <button className="login100-form-btn">
+        CREATE ACCOUNT
+    </button>
+    </div>
+
+
+    </form>
+    </div>
+    </div>
+    <div id="dropDownSelect1"></div>
+
+    </div>
+
+
+
+
+
+
+
         );
 
     }

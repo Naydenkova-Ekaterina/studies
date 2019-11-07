@@ -36,8 +36,10 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {MERGE})
     private Set<Cargo> cargoSet;
 
-    @OneToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
-    @JoinColumn(name = "route_id")
-    private Route route;
+//    @OneToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
+//    @JoinColumn(name = "route_id")
+//    private Route route;
+
+    private String way;
 
 }

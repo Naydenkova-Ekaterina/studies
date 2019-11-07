@@ -6,6 +6,12 @@
 <html>
 <head>
     <title>Suitable wagons</title>
+    <style>
+        <%@include file='/resources/css/headerStyle.css' %>
+        <%@include file='/resources/css/buttonStyle.css' %>
+
+        <%@include file='/resources/wagonStyle.css' %>
+    </style>
 
     <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
 
@@ -19,13 +25,75 @@
 
 </head>
 <body>
-<form>
-    <select id="orderSelect">
-    </select>
-    <input type="button" onclick="getSuitableWagons()">
-</form>
-<div id="resultDiv">
 
+
+
+
+
+<header class="myheader">
+    <h1 class="logo"><a class="headerNav" href="${pageContext.request.contextPath}/">Home</a></h1>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <nav class="headerNav">
+        <ul class="headerUl">
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/wagons">Wagons</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/drivers">Drivers</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/cargoes">Cargoes</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/orders" class="submenu-link">Orders</a>
+                <ul class="submenu">
+                    <li><a href="${pageContext.request.contextPath}/suitableWagons">Set wagon</a></li>
+                    <li><a href="${pageContext.request.contextPath}/suitableDrivers">Set drivers</a></li>
+                </ul>
+            </li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/driver/info/">Driver Info</a></li>
+        </ul>
+    </nav>
+    <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+    </label>
+</header>
+
+<div class="content">
+
+
+    <div class="container">
+
+        <form>
+
+            <select id="orderSelect" class="select">
+            </select>
+            <div class="button-2">
+                <div class="eff-2"></div>
+                <a href="#" onclick="getSuitableWagons()">Find suitable wagons</a>
+            </div>
+        </form>
+
+        <div class="table-wrapper">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2><b>Wagons</b></h2>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-hover" id="records_table">
+            <thead>
+            <tr>
+                <th>
+							<span class="custom-checkbox">
+							</span>
+                </th>
+                <th>Register number</th>
+                <th>Shift size</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>City</th>
+
+            </tr>
+            </thead>
+
+        </table>
+    </div>
+</div>
 </div>
 
 <script src="<c:url value="/resources/suitableWagons.js" />"></script>

@@ -1,5 +1,6 @@
 package shipping.controller;
 
+import com.jcabi.aspects.Loggable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,6 +45,7 @@ public class OrderController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/orders/listOrdersDTO")
     public @ResponseBody List<OrderDTO> listOrdersDTO(){
         try {
@@ -56,22 +58,27 @@ public class OrderController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/orders/getOrderRoute/{id}")
-    public @ResponseBody List<CityDTO> getOrderRoute(@PathVariable("id") int id){
+    public @ResponseBody String getOrderRoute(@PathVariable("id") int id){
         try {
 
-            cityConverter = new CityConverter(modelMapper);
+           // cityConverter = new CityConverter(modelMapper);
             Order order = orderService.getOrderById(id);
-            Set<City> cities = order.getRoute().getCityList();
-            List<City> sorted = cities.stream().sorted(Comparator.comparing(City::getId)).collect(Collectors.toList());
-            List<CityDTO> cityDTOS = sorted.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
-            return cityDTOS;
+//            Set<City> cities = order.getRoute().getCityList();
+//            for (City c: cities) {
+//                System.out.println(c.getName());
+//            }
+//            List<City> sorted = cities.stream().sorted(Comparator.comparing(City::getId)).collect(Collectors.toList());
+//            List<CityDTO> cityDTOS = sorted.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
+            return order.getWay();
         } catch (CustomServiceException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/orders/getOrderCargoes/{id}")
     public @ResponseBody List<CargoDTO> getOrderCargoes(@PathVariable("id") int id){
         try {
@@ -87,6 +94,7 @@ public class OrderController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/orders/getOrderDrivers/{id}")
     public @ResponseBody List<DriverDto> getOrderDrivers(@PathVariable("id") int id){
         try {
@@ -101,6 +109,7 @@ public class OrderController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/orders")
     public String listOrders(Model model) {
         try {
@@ -127,6 +136,7 @@ public class OrderController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @PostMapping("/order/add")
     public String addOrder(@ModelAttribute("order") OrderDTO orderDTO){
         try {
@@ -135,17 +145,25 @@ public class OrderController {
             cityConverter = new CityConverter(modelMapper);
             routeConverter = new RouteConverter(modelMapper);
 
+            validate(orderDTO);
+
             Cargo cargo = cargoService.getCargoById(Integer.valueOf(orderDTO.getCargoDTO_id()));
 
             int from = cityService.listCities().indexOf(cargo.getSrc().getCity());
             int to = cityService.listCities().indexOf(cargo.getDst().getCity());
 
             List<City> cities = routeService.getPath(from, to);
+            String way = "";
+            for (City c: cities) {
+                way += c.getName() + " ";
+            }
+            System.out.println("WAY = " + way);
 
             RouteDTO routeDTO = new RouteDTO();
             routeDTO.setCityDTOList(cities.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList()));
 
-            orderDTO.setRouteDTO(routeDTO);
+            orderDTO.setWay(way);
+           // orderDTO.setRouteDTO(routeDTO);
 
             cargo.setOrder(orderConverter.convertToEntity(orderDTO));
             CargoDTO cargoDTO = cargoConverter.convertToDto(cargo);
@@ -163,6 +181,13 @@ public class OrderController {
         }
     }
 
+    public void validate(OrderDTO orderDTO) throws CustomServiceException{
+        if (orderDTO.getCargoDTO_id()==null || orderDTO.getCargoDTO_id().equals("")) {
+            throw new CustomServiceException("No cargo selected.");
+        }
+    }
+
+    @Loggable(Loggable.DEBUG)
     @PostMapping("/order/addCargoToExistingOrder/{idOrder}/{idCargo}")
     public @ResponseBody String addCargoToExistingOrder(@PathVariable("idOrder") int idOrder, @PathVariable("idCargo") int idCargo) {
         try {
@@ -172,10 +197,10 @@ public class OrderController {
             cityConverter = new CityConverter(modelMapper);
 
             Order order = orderService.getOrderById(idOrder);
-            Set<City> cities = order.getRoute().getCityList();
-            List<CityDTO> cityDTOS = cities.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
-            RouteDTO routeDTO = routeConverter.convertToDto(order.getRoute());
-            routeDTO.setCityDTOList(cityDTOS);
+          //  Set<City> cities = order.getRoute().getCityList();
+            //List<CityDTO> cityDTOS = cities.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
+            //RouteDTO routeDTO = routeConverter.convertToDto(order.getRoute());
+            //routeDTO.setCityDTOList(cityDTOS);
 
             Cargo cargo = cargoService.getCargoById(idCargo);
 
@@ -187,17 +212,36 @@ public class OrderController {
 
             orderDTO.setCargoDTOS(list);
 
-            cityDTOS.stream().forEach(cityDTO -> System.out.println(cityDTO.getId() + " " + cityDTO.getName()));
+         //   cityDTOS.stream().forEach(cityDTO -> System.out.println(cityDTO.getId() + " " + cityDTO.getName()));
 
-            if (!cityDTOS.contains(cargoDTO.getSrc().getCity())) {
+//            if (!cityDTOS.contains(cargoDTO.getSrc().getCity())) {
+//                return "Make a new order for this cargo.";
+//            }
+
+            if (!orderService.convertWayToList(order).contains(cargo.getSrc().getCity())) {
+//                for (String str: orderService.convertWayToList(order)) {
+//
+//                }
+//                System.out.println(order.getWay());
+//                System.out.println(cargoDTO.getSrc().getCity().getName());
                 return "Make a new order for this cargo.";
+
             }
 
-            RouteDTO newRouteDTO = routeService.remakeRoute(routeDTO, cargoDTO);
+            //RouteDTO newRouteDTO = routeService.remakeRoute(routeDTO, cargoDTO);
 
-            newRouteDTO.getCityDTOList().stream().forEach(cityDTO -> System.out.println(cityDTO.getId() + " " + cityDTO.getName()));
+            String way = routeService.remakeRoute(order.getWay(), cargoDTO);
+
+            //String way = "";
+//            for (CityDTO c: newRouteDTO.getCityDTOList()) {
+//                way += c.getName() + " ";
+//            }
+
+
+            //newRouteDTO.getCityDTOList().stream().forEach(cityDTO -> System.out.println(cityDTO.getId() + " " + cityDTO.getName()));
             orderDTO.getCargoDTOS().add(cargoDTO);
-            orderDTO.setRouteDTO(newRouteDTO);
+            orderDTO.setWay(way);
+            //orderDTO.setRouteDTO(newRouteDTO);
 
             orderService.updateOrderAfterChangingRoute(orderConverter.convertToEntity(orderDTO));
             return "cargo was added";
@@ -207,6 +251,7 @@ public class OrderController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @PostMapping("/order/remove/{id}")
     public String removeOrder(@PathVariable("id") int id) {
         try {

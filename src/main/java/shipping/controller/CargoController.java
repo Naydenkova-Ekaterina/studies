@@ -1,15 +1,21 @@
 package shipping.controller;
 
+import com.jcabi.aspects.Loggable;
+import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shipping.dto.CargoDTO;
+import shipping.dto.CityDTO;
 import shipping.dto.converter.CargoConverter;
 import shipping.dto.converter.OrderConverter;
 import shipping.dto.converter.WaypointConverter;
-import shipping.exception.CustomDAOException;
+import shipping.enums.CargoStatus;
 import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 import shipping.model.Order;
@@ -24,6 +30,9 @@ import java.util.stream.Collectors;
 
 @Controller
 public class CargoController {
+
+    private static final Logger logger = Logger.getLogger(CargoController.class);
+
 
     private CargoService cargoService;
 
@@ -47,6 +56,7 @@ public class CargoController {
         this.orderService = orderService;
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/cargoes")
     public String listCargoes(Model model) {
         try {
@@ -54,10 +64,17 @@ public class CargoController {
             waypointConverter = new WaypointConverter(modelMapper);
             orderConverter = new OrderConverter(modelMapper);
             model.addAttribute("cargo", new CargoDTO());
-            List<Waypoint> waypoints = waypointService.listWaypoints();
-            model.addAttribute("waypoints", waypoints.stream()
+
+            List<Waypoint> waypointsSrc = waypointService.listWaypointsSrc();
+            model.addAttribute("waypointsSrc", waypointsSrc.stream()
                     .map(waypoint -> waypointConverter.convertToDto(waypoint))
                     .collect(Collectors.toList()));
+
+            List<Waypoint> waypointsDst = waypointService.listWaypointsDst();
+            model.addAttribute("waypointsDst", waypointsDst.stream()
+                    .map(waypoint -> waypointConverter.convertToDto(waypoint))
+                    .collect(Collectors.toList()));
+
             List<Order> orders = orderService.listOrders();
             model.addAttribute("orders", orders.stream()
                     .map(order -> orderConverter.convertToDto(order))
@@ -72,6 +89,7 @@ public class CargoController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/cargo/listCargoDTOS")
     public @ResponseBody List<CargoDTO> listCargoDTOS(){
         try {
@@ -83,6 +101,7 @@ public class CargoController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/cargo/listFreeCargoes")
     public @ResponseBody List<CargoDTO> listFreeCargoes(){
         try {
@@ -100,6 +119,7 @@ public class CargoController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @PostMapping("/cargo/add")
     public String addCargo(@ModelAttribute("cargo") CargoDTO cargo) {
         try {
@@ -116,6 +136,9 @@ public class CargoController {
 //                Order order = orderService.getOrderById(Integer.parseInt(cargo.getOrderDTO_id()));
 //                cargo.setOrderDTO(orderConverter.convertToDto(order));
 //            }
+
+            validate(cargo);
+
             cargoService.addCargo(cargoConverter.convertToEntity(cargo));
 
             return "redirect:/cargoes";
@@ -124,6 +147,17 @@ public class CargoController {
         }
     }
 
+    public void validate(CargoDTO cargoDTO) throws CustomServiceException{
+        if (cargoDTO.getName().equals("")) {
+            throw new CustomServiceException("Incorrect name.");
+        } else if (cargoDTO.getWeight() == 0.0) {
+            throw new CustomServiceException("Weight cannot be 0.0.");
+        } else if (cargoDTO.getSrc().getCity().getName().equals(cargoDTO.getDst().getCity().getName())) {
+            throw new CustomServiceException("Source and destination cannot be the same.");
+        }
+    }
+
+    @Loggable(Loggable.DEBUG)
     @PostMapping("/cargo/remove/{id}")
     public String removeCargo(@PathVariable("id") int id) {
         try {
@@ -134,6 +168,7 @@ public class CargoController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/cargo/edit/{id}")
     public @ResponseBody CargoDTO edit(@PathVariable("id") int id) {
         try {
@@ -144,6 +179,7 @@ public class CargoController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @PostMapping("/cargo/update")
     public String updateCargo(@ModelAttribute("cargo") CargoDTO cargo) {
         try {
@@ -157,8 +193,24 @@ public class CargoController {
             Waypoint dst = waypointService.getWaypointById(Integer.parseInt(cargo.getDst_id()));
             cargo.setDst(waypointConverter.convertToDto(dst));
 
+            validate(cargo);
+
             cargoService.updateCargo(cargoConverter.convertToEntity(cargo));
             return "redirect:/cargoes";
+        } catch (CustomServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Loggable(Loggable.DEBUG)
+    @PostMapping("/cargo/changeCargoStatus/{status}/{cargoId}")
+    public ResponseEntity<Void> changeDriverStatus(@PathVariable("status") String status, @PathVariable("cargoId") int cargoId) {
+        try {
+            Cargo cargo = cargoService.getCargoById(cargoId);
+            cargo.setStatus(CargoStatus.valueOf(status));
+            cargoService.updateCargo(cargo);
+            return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }

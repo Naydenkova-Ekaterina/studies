@@ -35,17 +35,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/driver/registerAdd/**","/cities/listCitiesDTO","/suitableWagons","/wagon/getSuitable/**","/wagon/setOrder/**","/orders/listOrdersDTO","/driver/getSuitable/**", "/suitableDrivers", "/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
-                .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("admin")
-                .antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/**", "/orders", "/order/**").hasAnyRole("EMPLOYEE")
-                .antMatchers("/driver/**","/driver/info","/driver/updateInfo/**").hasAnyRole("DRIVER")
+                .antMatchers("/errorHandler","/u","/driver/setOrder/**","/driver/getSuitable/**", "/driver/registerAdd/**","/cities/listCitiesDTO","/suitableWagons","/wagon/getSuitable/**","/wagon/setOrder/**","/orders/listOrdersDTO", "/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
+                //.antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/add", "/cargo/**", "/orders", "/order/**").hasAnyRole("admin")
+                .antMatchers("/suitableDrivers",
+                        "/wagons", "/wagon/add", "/wagon/edit/**", "/wagon/update/**", "/wagon/remover/**",
+                        "/drivers", "/driver/add", "/driver/edit/**", "/driver/update/**", "/driver/remove/**",
+                        "/cargoes", "/cargo/add", "/cargo/edit/**", "/cargo/update/**", "/cargo/remove/**", "/cargo/listFreeCargoes",
+                        "/orders", "/order/add", "/order/edit/**", "/order/update/**", "/order/remove/**",
+                        "/orders/getOrderRoute/**", "/orders/getOrderCargoes/**", "/orders/getOrderDrivers/**",
+                        "/order/addCargoToExistingOrder/**").hasRole("EMPLOYEE")
+                .antMatchers("/cargo/**","/cargo/changeCargoStatus/**","/orders/getDriverCargoes","/driver/changeDriverStatus/","/updateDriver","/driver/**","/driver/info","/driver/updateInfo/**").hasAnyRole("DRIVER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login")
                 .loginProcessingUrl("/loginAction")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .successForwardUrl("/")
+                .defaultSuccessUrl("/", true)
                 //.failureForwardUrl("/")
                 .permitAll()
                 .and()

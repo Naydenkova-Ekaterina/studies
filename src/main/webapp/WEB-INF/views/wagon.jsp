@@ -6,6 +6,8 @@
 <head>
     <title>Wagon Page</title>
     <style>
+        <%@include file='/resources/css/headerStyle.css' %>
+
         <%@include file='/resources/wagonStyle.css' %>
     </style>
     <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
@@ -20,8 +22,34 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="table-wrapper">
+
+<header class="myheader">
+    <h1 class="logo"><a class="headerNav" href="${pageContext.request.contextPath}/">Home</a></h1>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <nav class="headerNav">
+        <ul class="headerUl">
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/wagons">Wagons</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/drivers">Drivers</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/cargoes">Cargoes</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/orders" class="submenu-link">Orders</a>
+                <ul class="submenu">
+                    <li><a href="${pageContext.request.contextPath}/suitableWagons">Set wagon</a></li>
+                    <li><a href="${pageContext.request.contextPath}/suitableDrivers">Set drivers</a></li>
+                </ul>
+            </li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/driver/info/">Driver Info</a></li>
+        </ul>
+    </nav>
+    <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+    </label>
+</header>
+
+<div class="content">
+
+
+
+    <div class="container">    <div class="table-wrapper">
         <div class="table-title">
             <div class="row">
                 <div class="col-sm-6">
@@ -29,7 +57,6 @@
                 </div>
                 <div class="col-sm-6">
                     <a href="#addWagonModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Wagon</span></a>
-                    <a href="#deleteWagonModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
                 </div>
             </div>
         </div>
@@ -38,8 +65,6 @@
             <tr>
                 <th>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
 							</span>
                 </th>
                 <th>Register number</th>
@@ -50,22 +75,20 @@
             </tr>
             </thead>
             <tbody>
-                <c:forEach items="${listWagons}" var="cargo">
+                <c:forEach items="${listWagons}" var="wagon">
             <tr>
                 <td>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="checkbox1" name="options[]" value="1">
-								<label for="checkbox1"></label>
 							</span>
                 </td>
-                <td>${cargo.id}</td>
-                <td>${cargo.shiftSize}</td>
-                <td>${cargo.capacity}</td>
-                <td>${cargo.status}</td>
-                <td>${cargo.city.name}</td>
+                <td>${wagon.id}</td>
+                <td>${wagon.shiftSize}</td>
+                <td>${wagon.capacity}</td>
+                <td>${wagon.status}</td>
+                <td>${wagon.city.name}</td>
                 <td>
-                    <a href="#editWagonModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                    <a href="#deleteWagonModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                    <a href="#editWagonModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${wagon.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                    <a href="#deleteWagonModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${wagon.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                 </td>
             </tr>
             </c:forEach>
@@ -87,15 +110,15 @@
                     <div class="form-group">
 
                         <label>Register number</label>
-                        <form:input path="id" type="text" pattern="[a-zA-Z]{2}[0-9]{5}" class="form-control" />
+                        <form:input path="id" type="text" pattern="[a-zA-Z]{2}[0-9]{5}" placeholder="2 letters 5 numbers - ab12345" required="required" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>Shift size</label>
-                        <form:input path="shiftSize" type="text" class="form-control"/>
+                        <form:input path="shiftSize" type="text" pattern="[0-9]{2}:[0-9]{2}" placeholder="09:30"  required="required" class="form-control"/>
                     </div>
                     <div class="form-group">
                         <label>Capacity</label>
-                        <form:input path="capacity" type="text" class="form-control" />
+                        <form:input path="capacity" type="text" pattern="[0-9]+\.?[0-9]+" placeholder="1000" required="required" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -140,11 +163,11 @@
                     </div>
                     <div class="form-group">
                         <label>Shift size</label>
-                        <form:input path="shiftSize" type="text" class="form-control" id="UpdShift"/>
+                        <form:input path="shiftSize" type="text" class="form-control" pattern="[0-9]{2}:[0-9]{2}" placeholder="09:30"  required="required" id="UpdShift"/>
                     </div>
                     <div class="form-group">
                         <label>Capacity</label>
-                        <form:input path="capacity" type="text" class="form-control" id="UpdCap"/>
+                        <form:input path="capacity" type="text" class="form-control" pattern="[0-9]+\.?[0-9]+" placeholder="1000" required="required" id="UpdCap"/>
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -193,6 +216,7 @@
             </form:form>
         </div>
     </div>
+</div>
 </div>
 <script src="<c:url value="/resources/wagon.js" />"></script>
 

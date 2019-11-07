@@ -1,13 +1,17 @@
 package shipping.controller;
 
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MainController {
+
+    private static final Logger logger = Logger.getLogger(MainController.class);
+
 
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST })
     public String home(){
@@ -32,6 +36,17 @@ public class MainController {
     @GetMapping("/reg")
     public String reg(){
         return "reg";
+    }
+
+
+    @GetMapping("/u")
+    public String u(){
+        return "driverInfo";
+    }
+
+    @GetMapping("/updateDriver")
+    public String updateDriver(){
+        return "updateDriver";
     }
 
 }

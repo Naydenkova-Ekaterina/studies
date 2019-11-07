@@ -9,5 +9,6 @@ public interface CityService {
 
     List<City> listCities() throws CustomServiceException;
     City getCityById(int id) throws CustomServiceException;
+    City getCityByName(String name) throws CustomServiceException;
 
 }

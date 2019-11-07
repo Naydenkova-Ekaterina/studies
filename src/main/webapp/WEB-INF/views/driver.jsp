@@ -6,7 +6,10 @@
 <head>
     <title>Driver Page</title>
     <style>
+        <%@include file='/resources/css/headerStyle.css' %>
+
         <%@include file='/resources/wagonStyle.css' %>
+
     </style>
     <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
 
@@ -20,6 +23,32 @@
 </head>
 <body>
 
+<header class="myheader">
+    <h1 class="logo"><a class="headerNav" href="${pageContext.request.contextPath}/">Home</a></h1>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <nav class="headerNav">
+        <ul class="headerUl">
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/wagons">Wagons</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/drivers">Drivers</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/cargoes">Cargoes</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/orders" class="submenu-link">Orders</a>
+                <ul class="submenu">
+                    <li><a href="${pageContext.request.contextPath}/suitableWagons">Set wagon</a></li>
+                    <li><a href="${pageContext.request.contextPath}/suitableDrivers">Set drivers</a></li>
+                </ul>
+            </li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/driver/info/">Driver Info</a></li>
+        </ul>
+    </nav>
+    <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+    </label>
+</header>
+
+<div class="content">
+
+
+
 <div class="container">
     <div class="table-wrapper">
         <div class="table-title">
@@ -29,7 +58,6 @@
                 </div>
                 <div class="col-sm-6">
                     <a href="#addDriverModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Driver</span></a>
-                    <a href="#deleteDriverModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
                 </div>
             </div>
         </div>
@@ -38,14 +66,13 @@
             <tr>
                 <th>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
 							</span>
                 </th>
                 <th>Id</th>
                 <th>Name</th>
                 <th>Surname</th>
                 <th>Status</th>
+                <th>Worked hours</th>
                 <th>City</th>
                 <th>Wagon</th>
                 <th>Order</th>
@@ -54,25 +81,24 @@
             </tr>
             </thead>
             <tbody>
-            <c:forEach items="${listDrivers}" var="driver">
+            <c:forEach items="${listDrivers}" var="cargo">
                 <tr>
                     <td>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="checkbox1" name="options[]" value="1">
-								<label for="checkbox1"></label>
 							</span>
                     </td>
-                    <td>${driver.id}</td>
-                    <td>${driver.name}</td>
-                    <td>${driver.surname}</td>
-                    <td>${driver.status}</td>
-                    <td>${driver.city.name}</td>
-                    <td>${driver.wagon.id}</td>
-                    <td>${driver.order.id}</td>
-                    <td>${driver.user.email}</td>
+                    <td>${cargo.id}</td>
+                    <td>${cargo.name}</td>
+                    <td>${cargo.surname}</td>
+                    <td>${cargo.status}</td>
+                    <td>${cargo.workedHours}</td>
+                    <td>${cargo.city.name}</td>
+                    <td>${cargo.wagon.id}</td>
+                    <td>${cargo.order.id}</td>
+                    <td>${cargo.user.email}</td>
                     <td>
-                        <a href="#editDriverModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                        <a href="#deleteDriverModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${driver.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                        <a href="#editDriverModal" class="edit" data-toggle="modal" onclick="setIdForUpdate('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                        <a href="#deleteDriverModal" class="delete" data-toggle="modal" onclick="setIdForRemove('${cargo.id}')"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                     </td>
                 </tr>
             </c:forEach>
@@ -94,11 +120,11 @@
 
                     <div class="form-group">
                         <label>Name</label>
-                        <form:input path="name" type="text" class="form-control"/>
+                        <form:input path="name" type="text" placeholder="driver name" pattern="[A-Za-z]+" required="required" class="form-control"/>
                     </div>
                     <div class="form-group">
                         <label>Surname</label>
-                        <form:input path="surname" type="text" class="form-control" />
+                        <form:input path="surname" type="text" placeholder="driver surname" pattern="[A-Za-z]+" required="required" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -107,6 +133,10 @@
                             <option value="shift">Shift</option>
                             <option value="behindTheWheel">Behind the wheel</option>
                         </form:select>
+                    </div>
+                    <div class="form-group">
+                        <label>Worked hours</label>
+                        <form:input path="workedHours" type="text" pattern="[0-9]{2}:[0-9]{2}" placeholder="09:30"  required="required" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>City</label>
@@ -119,37 +149,6 @@
                         </form:select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Wagon</label>
-                        <form:select path="wagon_id" name="wagon" class="form-control">
-                            <c:forEach items="${wagons}" var="wagon">
-                                <form:option value="${wagon.id}">
-                                    <c:out value="${wagon.id}" />
-                                </form:option>
-                            </c:forEach>
-                        </form:select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Order</label>
-                        <form:select path="order_id" name="order" class="form-control">
-                            <c:forEach items="${orders}" var="order">
-                                <form:option value="${order.id}">
-                                    <c:out value="${order.id}" />
-                                </form:option>
-                            </c:forEach>
-                        </form:select>
-                    </div>
-                    <div class="form-group">
-                        <label>Order</label>
-                        <form:select path="user_id" name="user" class="form-control">
-                            <c:forEach items="${users}" var="user">
-                                <form:option value="${user.id}">
-                                    <c:out value="${user.email}" />
-                                </form:option>
-                            </c:forEach>
-                        </form:select>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
@@ -176,11 +175,11 @@
                     </div>
                     <div class="form-group">
                         <label>Name</label>
-                        <form:input path="name" type="text" class="form-control" id="UpdShift"/>
+                        <form:input path="name" type="text" placeholder="driver name" pattern="[A-Za-z]+" required="required" class="form-control" id="UpdShift"/>
                     </div>
                     <div class="form-group">
                         <label>Surname</label>
-                        <form:input path="surname" type="text" class="form-control" id="UpdCap"/>
+                        <form:input path="surname" type="text" placeholder="driver surname" pattern="[A-Za-z]+" required="required" class="form-control" id="UpdCap"/>
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -189,6 +188,10 @@
                             <option value="shift">Shift</option>
                             <option value="behindTheWheel">Behind the wheel</option>
                         </form:select>
+                    </div>
+                    <div class="form-group">
+                        <label>Worked hours</label>
+                        <form:input path="workedHours" type="text" pattern="[0-9]{2}:[0-9]{2}" placeholder="09:30"  required="required" class="form-control" id="UpdHours"/>
                     </div>
                     <div class="form-group">
                         <label>City</label>
@@ -203,6 +206,7 @@
                     <div class="form-group">
                         <label>Wagon</label>
                         <form:select path="wagon_id" id="UpdWagon" name="wagon" class="form-control">
+                            <option value="-">-</option>
                             <c:forEach items="${wagons}" var="wagon">
                                 <form:option value="${wagon.id}">
                                     <c:out value="${wagon.id}" />
@@ -214,6 +218,7 @@
                     <div class="form-group">
                         <label>Order</label>
                         <form:select path="order_id" id="UpdOrder" name="order" class="form-control">
+                            <option value="-">-</option>
                             <c:forEach items="${orders}" var="order">
                                 <form:option value="${order.id}">
                                     <c:out value="${order.id}" />
@@ -224,6 +229,7 @@
                     <div class="form-group">
                         <label>User</label>
                         <form:select path="user_id" id="UpdUser" name="user" class="form-control">
+                            <option value="-">-</option>
                             <c:forEach items="${users}" var="user">
                                 <form:option value="${user.id}">
                                     <c:out value="${user.email}" />
@@ -263,6 +269,16 @@
         </div>
     </div>
 </div>
+
+</div>
+
+<footer class="footer text-center">
+    <div class="container">
+        <!--/* This template is released under the Creative Commons Attribution 3.0 License. Please keep the attribution link below when using for your own project. Thank you for your support. :) If you'd like to use the template without the attribution, you can check out other license options via our website: themes.3rdwavemedia.com */-->
+
+    </div><!--//container-->
+</footer><!--//footer-->
+
 <script src="<c:url value="/resources/driver.js" />"></script>
 
 </body>

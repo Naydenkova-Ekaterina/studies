@@ -14,6 +14,10 @@ public class DriverInfoDTO {
 
     private int personalNumber;
 
+    private String name;
+
+    private String surname;
+
     private String wagon_id;
 
     private List<Integer> codrivers;

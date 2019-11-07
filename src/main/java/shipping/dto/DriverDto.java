@@ -22,6 +22,8 @@ public class DriverDto {
 
     private String status;
 
+    private String workedHours;
+
     private String city_id;
 
     private CityDTO city;

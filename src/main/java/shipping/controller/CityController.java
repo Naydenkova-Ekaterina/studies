@@ -1,5 +1,6 @@
 package shipping.controller;
 
+import com.jcabi.aspects.Loggable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ public class CityController {
         this.cityService = cityService;
     }
 
-
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/cities/listCitiesDTO")
     public @ResponseBody List<CityDTO> listCitiesDTO(){
         try {
@@ -53,6 +54,7 @@ public class CityController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/cities")
     public String listCities(Model model) {
         try {
@@ -68,6 +70,7 @@ public class CityController {
         }
     }
 
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/getCityNames")
     public ArrayList<String> getCityNames() {
         try {
@@ -82,7 +85,7 @@ public class CityController {
         }
     }
 
-
+    @Loggable(Loggable.DEBUG)
     @GetMapping("/getCities")
     public ArrayList<CityDTO> getCities() {
         try {

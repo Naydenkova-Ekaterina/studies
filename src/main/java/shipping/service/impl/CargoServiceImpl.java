@@ -83,11 +83,15 @@ public class CargoServiceImpl implements CargoService {
     @Override
     @Transactional
     public List<Cargo> cargoesForSrcWaypoint(int id) throws CustomServiceException {
+        try {
         List<Cargo> result =new ArrayList<>();
-        for (Cargo cargo: listCargoes()) {
+        for (Cargo cargo: cargoDAO.listCargoes()) {
             if (cargo.getSrc().getId() == id) result.add(cargo);
         }
         return result;
+        } catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
     }
 
     @Override

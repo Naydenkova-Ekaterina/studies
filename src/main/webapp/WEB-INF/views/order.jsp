@@ -6,6 +6,8 @@
 <head>
     <title>Order Page</title>
     <style>
+        <%@include file='/resources/css/headerStyle.css' %>
+
         <%@include file='/resources/wagonStyle.css' %>
     </style>
     <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
@@ -20,8 +22,34 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="table-wrapper">
+
+<header class="myheader">
+    <h1 class="logo"><a class="headerNav" href="${pageContext.request.contextPath}/">Home</a></h1>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <nav class="headerNav">
+        <ul class="headerUl">
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/wagons">Wagons</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/drivers">Drivers</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/cargoes">Cargoes</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/orders" class="submenu-link">Orders</a>
+                <ul class="submenu">
+                    <li><a href="${pageContext.request.contextPath}/suitableWagons">Set wagon</a></li>
+                    <li><a href="${pageContext.request.contextPath}/suitableDrivers">Set drivers</a></li>
+                </ul>
+            </li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/driver/info/">Driver Info</a></li>
+        </ul>
+    </nav>
+    <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+    </label>
+</header>
+
+<div class="content">
+
+
+
+    <div class="container">    <div class="table-wrapper">
         <div class="table-title">
             <div class="row">
                 <div class="col-sm-6">
@@ -29,7 +57,6 @@
                 </div>
                 <div class="col-sm-6">
                     <a href="#addOrderModal" onclick="addOrder()" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Order</span></a>
-                    <a href="#deleteOrderModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
                 </div>
             </div>
         </div>
@@ -38,8 +65,6 @@
             <tr>
                 <th>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
 							</span>
                 </th>
                 <th>Id</th>
@@ -52,8 +77,6 @@
                 <tr>
                     <td>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="checkbox1" name="options[]" value="1">
-								<label for="checkbox1"></label>
 							</span>
                     </td>
                     <td>${order.id}</td>
@@ -104,19 +127,75 @@
     </div>
 </div>
 <!-- Edit Modal HTML -->
-<div id="orderDetailsModal" class="modal fade">
+<div id="orderDetailsModal" class="modal fade" >
     <div class="modal-dialog">
         <div class="modal-content">
             <form:form  id="formUpdate"  >
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Wagon</h4>
+                    <h4 class="modal-title">Order Details</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
+                <h4>Route</h4>
+                <span id="orderRoute"></span>
 
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-info" value="Save">
+                <div class="table-title" >
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h2><b>Cargoes</b></h2>
+                        </div>
+                        <div class="col-sm-6">
+                        </div>
+                    </div>
                 </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Weight</th>
+                        <th>Status</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="cargoes_table">
+                    </tbody>
+                </table>
+
+                <div class="table-title" >
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h2><b>Drivers</b></h2>
+                        </div>
+                        <div class="col-sm-6">
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Status</th>
+                        <th>City</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="drivers_table">
+                    </tbody>
+                </table>
+
+
+
+
+<%--                <div id="drivers_table"></div>--%>
+
+
             </form:form>
         </div>
     </div>
@@ -165,6 +244,7 @@
             </form:form>
         </div>
     </div>
+</div>
 </div>
 <script src="<c:url value="/resources/order.js" />"></script>
 

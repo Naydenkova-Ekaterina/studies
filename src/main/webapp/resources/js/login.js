@@ -22,27 +22,78 @@ class MyForm extends React.Component {
         var result = "email=" + logObj.email + "&password=" + logObj.password;
         console.log(result);
 
-        fetch(CONTEXT_PATH + '/loginAction', {
-            method: 'POST',
-            headers: {
-                'Content-Type': ' application/x-www-form-urlencoded'
-            },
-            body: result
-        })
+
+        $.ajax({
+            url: CONTEXT_PATH + '/loginAction',
+            type: "POST",
+            data: result,
+            contentType:' application/x-www-form-urlencoded',
+            success: function () {
+                console.log("success")
+                document.getElementById('logoId').click();
+            }
+        });
 
     }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label htmlFor="email">Enter email</label>
-                <input id="email" name="email" type="text" />
 
-                <label htmlFor="password">Enter your password</label>
-                <input id="password" name="password" type="password" />
 
-                <button>SIGN IN</button>
-            </form>
+            <div className = "limiter" >
+            < div className = "container-login100" >
+            < div className = "wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33" >
+            < form className = "login100-form validate-form flex-sb flex-w" onSubmit={this.handleSubmit}>
+            < span className = "login100-form-title p-b-53" >Sign In</span>
+
+        {/*<a href="#" className="btn-face m-b-20">*/}
+        {/*    <i className="fa fa-facebook-official"></i>Facebook</a>*/}
+
+        {/*<a href = "#" className = "btn-google m-b-20" >*/}
+        {/*    <img src = "images/icons/icon-google.png" alt = "GOOGLE" />Google</a>*/}
+
+        <div className="p-t-31 p-b-9">
+						<span className="txt1">
+							Email
+						</span>
+        </div>
+        < div className = "wrap-input100 validate-input" >
+            < input className = "input100" type = "text" id="email" name="email" />
+            < span className = "focus-input100" > </span>
+    </div>
+
+    <div className="p-t-13 p-b-9">
+    <span className="txt1">
+    Password
+    </span>
+
+    </div>
+    <div className="wrap-input100 validate-input" data-validate = "Password is required">
+    <input className="input100" type="password" name="password" type="password" />
+    <span className="focus-input100"></span>
+    </div>
+
+    <div className="container-login100-form-btn m-t-17">
+    <button className="login100-form-btn">
+    Sign In
+    </button>
+    </div>
+
+    <div className="w-full text-center p-t-55">
+    <span className="txt2">
+    Not a member?
+    </span>
+
+    <a href={CONTEXT_PATH+"/reg"} className="txt2 bo1">Sign up now</a>
+    </div>
+    </form>
+    </div>
+    </div>
+                <div id="dropDownSelect1"></div>
+
+            </div>
+
+
         );
     }
 }

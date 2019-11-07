@@ -169,6 +169,7 @@ body {
     }
     .myheader{
         display: grid;
+        border-top: 5px solid #40babd;
         grid-template-columns: 1fr auto minmax(600px,3fr) 1fr;
     }
     .logo{
@@ -219,12 +220,6 @@ body {
     display: table;
     clear: both;
 }
-/*.headerUl > li {*/
-/*    width: 25%;*/
-/*    float: left;*/
-/*    position: relative;*/
-/*    font-family: 'Open Sans', sans-serif;*/
-/*}*/
 
 .submenu-link:after {
     content: "\f107";

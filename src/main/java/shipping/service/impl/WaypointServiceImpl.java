@@ -3,6 +3,7 @@ package shipping.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shipping.dao.WaypointDAO;
+import shipping.enums.WaypointType;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Waypoint;
@@ -25,6 +26,38 @@ public class WaypointServiceImpl implements WaypointService {
     public List<Waypoint> listWaypoints() throws CustomServiceException {
         try {
             return waypointDAO.listWaypoints();
+        } catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<Waypoint> listWaypointsSrc() throws CustomServiceException {
+        try {
+            List<Waypoint> result = new ArrayList<>();
+            for (Waypoint w: waypointDAO.listWaypoints()) {
+                if (w.getType() == WaypointType.loading) {
+                    result.add(w);
+                }
+            }
+            return result;
+        } catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<Waypoint> listWaypointsDst() throws CustomServiceException {
+        try {
+            List<Waypoint> result = new ArrayList<>();
+            for (Waypoint w: waypointDAO.listWaypoints()) {
+                if (w.getType() == WaypointType.unloading) {
+                    result.add(w);
+                }
+            }
+            return result;
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }

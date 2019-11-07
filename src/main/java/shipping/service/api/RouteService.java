@@ -22,9 +22,10 @@ public interface RouteService {
     LinkedList<City> getPath(int from, int to) throws CustomServiceException;
 
     RouteDTO remakeRoute(RouteDTO oldRoute, CargoDTO newCargo) throws CustomServiceException;
+    String remakeRoute(String oldRoute, CargoDTO newCargo) throws CustomServiceException;
 
     double countDistanceForRoute(List<CityDTO> linkedList) throws CustomServiceException;
 
-    LocalTime getRouteTime(Set<City> cities) throws CustomServiceException;
+    LocalTime getRouteTime(List<City> cities) throws CustomServiceException;
 
 }

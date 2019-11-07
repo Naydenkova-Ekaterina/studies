@@ -38,4 +38,17 @@ public class CityServiceImpl implements CityService {
             throw new CustomServiceException(e);
         }
     }
+
+    @Override
+    @Transactional
+    public City getCityByName(String name) throws CustomServiceException {
+        try {
+            for (City city: cityDAO.listCities()) {
+                if (city.getName().equals(name)) return city;
+            }
+            return null;
+        } catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
+    }
 }

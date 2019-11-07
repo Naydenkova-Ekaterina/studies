@@ -1,34 +1,30 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ page session="false" %>
+<%--
+  Created by IntelliJ IDEA.
+  User: ekaterina
+  Date: 03.11.2019
+  Time: 17:22
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<head>
-    <title>Login</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-with-addons.min.js"></script>
-    <script src="https://npmcdn.com/react-dom@15.3.0/dist/react-dom.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<head>
+    <title>Error Handler</title>
+    <style>
+        <%@include file='/resources/css/headerStyle.css' %>
+        <%@include file='/resources/css/errorHandlerStyle.css' %>
+
+
+    </style>
+    <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
-
-    <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
-
-
-        <style>
-            <%@include file='/resources/css/headerStyle.css' %>
-            <%@include file='/resources/css/main.css' %>
-
-        </style>
-
 </head>
 <body>
 
@@ -54,17 +50,22 @@
     </label>
 </header>
 
-<div id="app"></div>
+<div class="content">
 
 
-<%--<c:url var="addAction" value="/loginAction" ></c:url>--%>
-<%--<form:form action="${addAction}"  >--%>
-<%--    <input type="text" name="email">--%>
-<%--    <input type="text" name="password">--%>
-<%--    <input type="submit">--%>
-<%--</form:form>--%>
+    <div id="notfound">
+        <div class="notfound">
+            <div class="notfound-404">
+                <h1>${status}</h1>
+            </div>
+            <h2>Oops! Something went wrong</h2>
+            <p>${exception} <a href="#">Return to homepage</a></p>
 
-<script type="text/babel" src="<c:url value="/resources/js/reg.js" />"></script>
+        </div>
+    </div>
+
+
+</div>
 
 </body>
 </html>

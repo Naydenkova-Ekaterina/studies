@@ -17,16 +17,10 @@ import shipping.model.Cargo;
 import shipping.model.City;
 import shipping.model.Order;
 import shipping.model.Waypoint;
-import shipping.service.api.CargoService;
-import shipping.service.api.OrderService;
-import shipping.service.api.RouteService;
-import shipping.service.api.WaypointService;
+import shipping.service.api.*;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +37,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CargoService cargoService;
+
+    @Autowired
+    private CityService cityService;
 
     public void setOrderDAO(OrderDAO orderDAO) {
         this.orderDAO = orderDAO;
@@ -90,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void updateOrderAfterChangingRoute(Order order) throws CustomServiceException {
         try {
-            routeDAO.addRoute(order.getRoute());
+            //routeDAO.addRoute(order.getRoute());
             orderDAO.update(order);
 
             for (Cargo cargo :order.getCargoSet()){
@@ -144,15 +141,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public double countOrderWeight(Order order) {
+    public double countOrderWeight(Order order) throws CustomServiceException {
         double weight = 0;
         double maxWeight = 0;
 
-        Set<Cargo> cargos = order.getCargoSet();
-        List<City> cities = order.getRoute().getCityList().stream().sorted(Comparator.comparing(City::getId)).collect(Collectors.toList());
+        Set<Cargo> cargoes = order.getCargoSet();
+        List<City> cities = convertWayToList(order);
 
         for (City city: cities) {
-            for (Cargo cargo: cargos) {
+            for (Cargo cargo: cargoes) {
                 if (cargo.getSrc().getCity().getName().equals(city.getName())) {
                     weight += cargo.getWeight();
                     if (weight > maxWeight) maxWeight = weight;
@@ -163,6 +160,17 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return maxWeight;
+    }
+
+    public List<City> convertWayToList(Order order) throws CustomServiceException {
+        List<City> cities = new ArrayList<>();
+        String way = order.getWay().trim();
+        ArrayList<String> stringArrayList = new ArrayList<>(Arrays.asList(way.split(" ")));
+        for (String str: stringArrayList) {
+            cities.add(cityService.getCityByName(str));
+        }
+
+        return cities;
     }
 
 }

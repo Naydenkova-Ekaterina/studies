@@ -14,6 +14,9 @@ public class CargoConverter {
 
     public CargoDTO convertToDto(Cargo cargo) {
         CargoDTO cargoDTO = modelMapper.map(cargo, CargoDTO.class);
+        if (cargo.getOrder() != null) {
+            cargoDTO.setOrderDTO_id(String.valueOf(cargo.getOrder().getId()));
+        }
         return cargoDTO;
     }
 

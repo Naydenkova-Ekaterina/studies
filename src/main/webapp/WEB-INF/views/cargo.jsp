@@ -4,8 +4,10 @@
 <%@ page session="false" %>
 <html>
 <head>
-    <title>Driver Page</title>
+    <title>Cargo Page</title>
     <style>
+        <%@include file='/resources/css/headerStyle.css' %>
+
         <%@include file='/resources/wagonStyle.css' %>
     </style>
     <link id="contextPathHolder" data-contextPath="${pageContext.request.contextPath}"/>
@@ -20,8 +22,34 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="table-wrapper">
+
+<header class="myheader">
+    <h1 class="logo"><a class="headerNav" href="${pageContext.request.contextPath}/">Home</a></h1>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <nav class="headerNav">
+        <ul class="headerUl">
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/wagons">Wagons</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/drivers">Drivers</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/cargoes">Cargoes</a></li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/orders" class="submenu-link">Orders</a>
+                <ul class="submenu">
+                    <li><a href="${pageContext.request.contextPath}/suitableWagons">Set wagon</a></li>
+                    <li><a href="${pageContext.request.contextPath}/suitableDrivers">Set drivers</a></li>
+                </ul>
+            </li>
+            <li><a class="headerLink" href="${pageContext.request.contextPath}/driver/info/">Driver Info</a></li>
+        </ul>
+    </nav>
+    <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+    </label>
+</header>
+
+<div class="content">
+
+
+
+    <div class="container">    <div class="table-wrapper">
         <div class="table-title">
             <div class="row">
                 <div class="col-sm-6">
@@ -29,7 +57,6 @@
                 </div>
                 <div class="col-sm-6">
                     <a href="#addCargoModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Cargo</span></a>
-                    <a href="#deleteCargoModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
                 </div>
             </div>
         </div>
@@ -38,8 +65,6 @@
             <tr>
                 <th>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
 							</span>
                 </th>
                 <th>Id</th>
@@ -57,8 +82,6 @@
                 <tr>
                     <td>
 							<span class="custom-checkbox">
-								<input type="checkbox" id="checkbox1" name="options[]" value="1">
-								<label for="checkbox1"></label>
 							</span>
                     </td>
                     <td>${cargo.id}</td>
@@ -92,11 +115,11 @@
 
                     <div class="form-group">
                         <label>Name</label>
-                        <form:input path="name" type="text" class="form-control"/>
+                        <form:input path="name" type="text" class="form-control" pattern="[A-Za-z]+" placeholder=" cargo name" required="required"/>
                     </div>
                     <div class="form-group">
                         <label>Weight</label>
-                        <form:input path="weight" type="text" class="form-control" />
+                        <form:input path="weight" type="text" class="form-control" placeholder="12.34" pattern="[0-9]+\.?[0-9]+" required="required"/>
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -109,7 +132,7 @@
                     <div class="form-group">
                         <label>Source</label>
                         <form:select path="src_id" id="options" name="city" class="form-control">
-                            <c:forEach items="${waypoints}" var="waypoint">
+                            <c:forEach items="${waypointsSrc}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
                                 </form:option>
@@ -120,7 +143,7 @@
                     <div class="form-group">
                         <label>Destination</label>
                         <form:select path="dst_id" id="options" name="city" class="form-control">
-                            <c:forEach items="${waypoints}" var="waypoint">
+                            <c:forEach items="${waypointsDst}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
                                 </form:option>
@@ -154,11 +177,11 @@
                     </div>
                     <div class="form-group">
                         <label>Name</label>
-                        <form:input path="name" type="text" class="form-control" id="UpdShift"/>
+                        <form:input path="name" type="text" class="form-control" pattern="[A-Za-z0-9]+" id="UpdShift" required="required"/>
                     </div>
                     <div class="form-group">
                         <label>Weight</label>
-                        <form:input path="weight" type="text" class="form-control" id="UpdCap"/>
+                        <form:input path="weight" type="text" class="form-control" pattern="[0-9]+\.?[0-9]+" id="UpdCap" required="required"/>
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -171,7 +194,7 @@
                     <div class="form-group">
                         <label>Source</label>
                         <form:select path="src_id" name="city" class="form-control" id="UpdSrc">
-                            <c:forEach items="${waypoints}" var="waypoint">
+                            <c:forEach items="${waypointsSrc}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
                                 </form:option>
@@ -182,7 +205,7 @@
                     <div class="form-group">
                         <label>Destination</label>
                         <form:select path="dst_id" name="city" class="form-control" id="UpdDst">
-                            <c:forEach items="${waypoints}" var="waypoint">
+                            <c:forEach items="${waypointsDst}" var="waypoint">
                                 <form:option value="${waypoint.id}">
                                     <c:out value="${waypoint.city.name}" />
                                 </form:option>
@@ -221,6 +244,7 @@
             </form:form>
         </div>
     </div>
+</div>
 </div>
 <script src="<c:url value="/resources/cargo.js" />"></script>
 

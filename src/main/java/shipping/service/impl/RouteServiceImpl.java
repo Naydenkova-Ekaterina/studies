@@ -117,12 +117,19 @@ public class RouteServiceImpl implements RouteService {
         Map<Double, List<City>> map = new HashMap<>();
 
         List<City> oldStartRoute = oldRoute.getCityDTOList().stream().map(cityDTO -> cityConverter.convertToEntity(cityDTO)).collect(Collectors.toList());
+
+        System.out.println("old route " );
+        for (City c:oldStartRoute) {
+            System.out.println(c.getName());
+        }
+
         int index = oldStartRoute.size()-1;
         int startChangingIndexForRoute = oldRoute.getCityDTOList().indexOf(newCargo.getSrc().getCity());
 
         for (int i = index; i>startChangingIndexForRoute; i--) {
             oldStartRoute.remove(i);
         }
+
         oldStartRoute.stream().forEach(cityDTO -> System.out.println(cityDTO.getId() + " " + cityDTO.getName()));
 
 
@@ -132,6 +139,11 @@ public class RouteServiceImpl implements RouteService {
             int  from1 = cityService.listCities().indexOf(cityConverter.convertToEntity(current));
             int to1 = cityService.listCities().indexOf(cityConverter.convertToEntity(newCargo.getDst().getCity()));
             LinkedList<City> newSubRouteNewSrcToNewDst = getPath(from1, to1);
+
+
+            //if (newSubRouteNewSrcToNewDst.contains())
+
+
             int from2 = cityService.listCities().indexOf(cityConverter.convertToEntity(newCargo.getDst().getCity()));
             int to2 = cityService.listCities().indexOf(cityConverter.convertToEntity(oldRoute.getCityDTOList().get(citiesCount-1)));
             LinkedList<City> newSubRouteNewDstToOldDst = getPath(from2, to2);
@@ -139,6 +151,10 @@ public class RouteServiceImpl implements RouteService {
             newSubRouteNewSrcToNewDst.addAll(newSubRouteNewDstToOldDst);
             finalRoute.addAll(oldStartRoute);
             finalRoute.addAll(newSubRouteNewSrcToNewDst);
+            System.out.println("route " + i );
+            for (City c:finalRoute) {
+                System.out.println(c.getName());
+            }
             map.put(countDistanceForRoute(newSubRouteNewSrcToNewDst.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList())), finalRoute);
         }
 
@@ -153,6 +169,97 @@ public class RouteServiceImpl implements RouteService {
         newRoute.setCityDTOList(listConverted);
         return newRoute;
     }
+
+
+    public String remakeRoute(String oldRoute, CargoDTO newCargo) throws CustomServiceException {
+        cityConverter = new CityConverter(modelMapper);
+        oldRoute.trim();
+        ArrayList<String> oldRouteArray = new ArrayList<>(Arrays.asList(oldRoute.split(" ")));
+        ArrayList<String> oldRouteArrayForAdd = new ArrayList<>(oldRouteArray);
+        String dstName = oldRouteArray.get(oldRouteArray.size()-1);
+        if (!oldRouteArray.contains(newCargo.getSrc().getCity().getName()) ||
+                (oldRouteArray.contains(newCargo.getSrc().getCity().getName()) && oldRouteArray.contains(newCargo.getDst().getCity().getName()))) {
+            System.out.println("old route");
+            return oldRoute;
+        }
+        String newRoute = "";
+        int citiesCount = oldRouteArray.size();
+        Map<Double, List<String>> map = new HashMap<>();
+
+
+        int index = oldRouteArray.size()-1;
+        int startChangingIndexForRoute = oldRouteArray.indexOf(newCargo.getSrc().getCity().getName());
+
+        for (int i = index; i>startChangingIndexForRoute; i--) {
+            oldRouteArrayForAdd.remove(i);
+        }
+
+
+        for (int i = startChangingIndexForRoute; i < citiesCount; i++) {
+            List<String> finalRoute = new ArrayList<>();
+            City current = cityService.getCityByName(oldRouteArray.get(i));
+            if (i != startChangingIndexForRoute) {
+                oldRouteArrayForAdd.add(current.getName());
+            }
+            int  from1 = cityService.listCities().indexOf((current));
+            int to1 = cityService.listCities().indexOf(cityConverter.convertToEntity(newCargo.getDst().getCity()));
+            LinkedList<City> newSubRouteNewSrcToNewDst = getPath(from1, to1);
+
+            List<String> newSubRouteNewSrcToNewDstArray = newSubRouteNewSrcToNewDst.stream().map(city -> city.getName()).collect(Collectors.toList());
+
+            if (newSubRouteNewSrcToNewDstArray.contains(dstName)) {
+                if (i==startChangingIndexForRoute) {
+
+                    newSubRouteNewSrcToNewDstArray.remove(0);
+                    newSubRouteNewSrcToNewDst.removeFirst();
+                } else {
+                    oldRouteArrayForAdd.remove(dstName);
+
+                }
+
+                oldRouteArrayForAdd.addAll(newSubRouteNewSrcToNewDstArray);
+
+                map.put(countDistanceForRoute(newSubRouteNewSrcToNewDst.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList())), oldRouteArrayForAdd);
+
+                continue;
+            }
+            if (i==startChangingIndexForRoute) {
+                newSubRouteNewSrcToNewDstArray.remove(0);
+                newSubRouteNewSrcToNewDst.removeFirst();
+            }
+
+            City oldRouteDst = cityService.getCityByName(dstName);
+            int from2 = cityService.listCities().indexOf(cityConverter.convertToEntity(newCargo.getDst().getCity()));
+            int to2 = cityService.listCities().indexOf(oldRouteDst);
+            LinkedList<City> newSubRouteNewDstToOldDst = getPath(from2, to2);
+            newSubRouteNewDstToOldDst.removeFirst();
+            List<String> newSubRouteNewDstToOldDstArray = newSubRouteNewDstToOldDst.stream().map(city -> city.getName()).collect(Collectors.toList());
+
+            newSubRouteNewSrcToNewDst.addAll(newSubRouteNewDstToOldDst);
+            newSubRouteNewSrcToNewDstArray.addAll(newSubRouteNewDstToOldDstArray);
+
+            finalRoute.addAll(oldRouteArrayForAdd);
+            finalRoute.addAll(newSubRouteNewSrcToNewDstArray);
+
+            map.put(countDistanceForRoute(newSubRouteNewSrcToNewDst.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList())), finalRoute);
+        }
+
+        double min = Double.MAX_VALUE;
+        for (double key: map.keySet()) {
+            if (key < min) {
+                min = key;
+            }
+        }
+
+        List<String> listConverted = new LinkedList<>(map.get(min));
+        newRoute = "";
+        for (String str: listConverted) {
+            newRoute += str + " ";
+        }
+        return newRoute;
+    }
+
+
 
     public double countDistanceForRoute(List<CityDTO> linkedList) throws CustomServiceException{
         cityConverter = new CityConverter(modelMapper);
@@ -181,7 +288,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public LocalTime getRouteTime(Set<City> cities) throws CustomServiceException  {
+    public LocalTime getRouteTime(List<City> cities) throws CustomServiceException  {
         cityConverter = new CityConverter(modelMapper);
 
         List<CityDTO> listConverted = cities.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
