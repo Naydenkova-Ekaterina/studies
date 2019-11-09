@@ -22,7 +22,6 @@ public class DriverConverter {
     public Driver convertToEntity(DriverDto driverDto) {
         Driver driver = modelMapper.map(driverDto, Driver.class);
         driver.setWorkedHours(LocalTime.parse(driverDto.getWorkedHours()));
-
         return driver;
     }
 

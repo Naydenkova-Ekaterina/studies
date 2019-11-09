@@ -26,11 +26,6 @@ public class CityController {
     private CityService cityService;
 
     @Autowired
-    private static ModelMapper modelMapper;
-
-    private CityConverter cityConverter;
-
-    @Autowired
     public CityController(CityService cityService) {
         this.cityService = cityService;
     }
@@ -39,16 +34,7 @@ public class CityController {
     @GetMapping("/cities/listCitiesDTO")
     public @ResponseBody List<CityDTO> listCitiesDTO(){
         try {
-            List<CityDTO> cityDTOList = new ArrayList<>();
-            for (City city: cityService.listCities()) {
-                CityDTO cityDTO = new CityDTO();
-                cityDTO.setId(city.getId());
-                cityDTO.setName(city.getName());
-                cityDTOList.add(cityDTO);
-            }
-            //List<CityDTO> cityDTOList = cityService.listCities().stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList());
-
-            return cityDTOList;
+            return cityService.listCitiesDTO();
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
@@ -58,13 +44,9 @@ public class CityController {
     @GetMapping("/cities")
     public String listCities(Model model) {
         try {
-            cityConverter = new CityConverter(modelMapper);
             model.addAttribute("city", new CityDTO());
-            List<City> cargoes = cityService.listCities();
-            model.addAttribute("listCities", cargoes.stream()
-                    .map(cargo -> cityConverter.convertToDto(cargo))
-                    .collect(Collectors.toList()));
-            return "cargo";
+            model.addAttribute("listCities", cityService.listCities());
+            return "city";
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
@@ -74,30 +56,9 @@ public class CityController {
     @GetMapping("/getCityNames")
     public ArrayList<String> getCityNames() {
         try {
-
-            ArrayList<String> list = new ArrayList<>();
-            for (City city : cityService.listCities()) {
-                list.add(city.getName());
-            }
-            return list;
+            return cityService.getCityNames();
         } catch(CustomServiceException e){
                 throw new RuntimeException(e);
-        }
-    }
-
-    @Loggable(Loggable.DEBUG)
-    @GetMapping("/getCities")
-    public ArrayList<CityDTO> getCities() {
-        try {
-            cityConverter = new CityConverter(modelMapper);
-
-            ArrayList<CityDTO> list = new ArrayList<>();
-            for (City city : cityService.listCities()) {
-                list.add(cityConverter.convertToDto(city));
-            }
-            return list;
-        } catch(CustomServiceException e){
-            throw new RuntimeException(e);
         }
     }
 

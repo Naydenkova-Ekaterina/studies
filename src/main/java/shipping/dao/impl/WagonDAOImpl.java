@@ -34,7 +34,7 @@ public class WagonDAOImpl implements WagonDAO {
     public void update(Wagon wagon) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            session.update(wagon);
+            session.merge(wagon);
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }

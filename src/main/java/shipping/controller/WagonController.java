@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import shipping.dto.CityDTO;
 import shipping.dto.converter.CityConverter;
 import shipping.dto.converter.OrderConverter;
 import shipping.dto.converter.WagonConverter;
@@ -31,43 +32,20 @@ public class WagonController {
 
     private CityService cityService;
 
-    private OrderService orderService;
-
     @Autowired
-    private ModelMapper modelMapper;
-
-    private WagonConverter wagonConverter;
-
-    private CityConverter cityConverter;
-
-    private OrderConverter orderConverter;
-
-
-    @Autowired
-    public WagonController(WagonService wagonService, CityService cityService, OrderService orderService) {
+    public WagonController(WagonService wagonService, CityService cityService) {
         this.wagonService = wagonService;
         this.cityService = cityService;
-        this.orderService = orderService;
     }
 
     @Loggable(Loggable.DEBUG)
     @GetMapping("/wagons")
     public String listWagons(Model model) {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
-            cityConverter = new CityConverter(modelMapper);
             model.addAttribute("wagon", new WagonDTO());
-            List<City> cities = cityService.listCities();
-            model.addAttribute("cities", cities.stream()
-                    .map(city -> cityConverter.convertToDto(city))
-                    .collect(Collectors.toList()));
-
-            List<Wagon> wagons = wagonService.listWagons();
-            model.addAttribute("listWagons", wagons.stream()
-                    .map(wagon -> wagonConverter.convertToDto(wagon))
-                    .collect(Collectors.toList()));
+            model.addAttribute("cities", cityService.listCities());
+            model.addAttribute("listWagons", wagonService.listWagons());
             return "wagon";
-
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
@@ -77,13 +55,8 @@ public class WagonController {
     @PostMapping("/wagon/add")
     public String addWagon(@ModelAttribute("wagon") WagonDTO wagonDTO) {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
-            cityConverter = new CityConverter(modelMapper);
-            City city = cityService.getCityById(Integer.valueOf(wagonDTO.getCity_id()));
-            wagonDTO.setCity(cityConverter.convertToDto(city));
             validate(wagonDTO);
-            wagonService.addWagon(wagonConverter.convertToEntity(wagonDTO));
-
+            wagonService.addWagon(wagonDTO);
             return "redirect:/wagons";
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
@@ -115,8 +88,7 @@ public class WagonController {
     @GetMapping("/wagon/edit/{id}")
     public @ResponseBody WagonDTO edit(@PathVariable("id") String id) {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
-            return wagonConverter.convertToDto(wagonService.getWagonById(id));
+            return wagonService.getWagonById(id);
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
@@ -126,13 +98,8 @@ public class WagonController {
     @PostMapping("/wagon/update")
     public String updateWagon(@ModelAttribute("wagon") WagonDTO wagonDTO) {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
-            cityConverter = new CityConverter(modelMapper);
-            City city = cityService.getCityById(Integer.valueOf(wagonDTO.getCity_id()));
-            wagonDTO.setCity(cityConverter.convertToDto(city));
             validate(wagonDTO);
-
-            wagonService.updateWagon(wagonConverter.convertToEntity(wagonDTO));
+            wagonService.updateWagon(wagonDTO);
             return "redirect:/wagons";
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
@@ -143,13 +110,7 @@ public class WagonController {
     @GetMapping("/wagon/getSuitable/{id}")
     public @ResponseBody List<WagonDTO> getSuitableWagons(@PathVariable("id") int id) {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
-            Order order = orderService.getOrderById(id);
-            double orderWeight = orderService.countOrderWeight(order);
-            List<WagonDTO> result =  wagonService.getSuitableWagons(orderWeight).stream()
-                    .map(wagon -> wagonConverter.convertToDto(wagon))
-                    .collect(Collectors.toList());
-            return result;
+            return wagonService.getSuitableWagons(id);
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }
@@ -159,16 +120,8 @@ public class WagonController {
     @PostMapping("/wagon/setOrder/{idWagon}/{idOrder}")
     public ResponseEntity<Void> setOrder(@PathVariable("idWagon") String idWagon, @PathVariable("idOrder") int idOrder) {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
-            orderConverter = new OrderConverter(modelMapper);
-
-            Order order = orderService.getOrderById(idOrder);
-            Wagon wagon = wagonService.getWagonById(idWagon);
-
-            order.setWagon(wagon);
-            orderService.updateOrder(order);
+            wagonService.setOrder(idWagon, idOrder);
             return new ResponseEntity<>(HttpStatus.OK);
-
         } catch (CustomServiceException e) {
             throw new RuntimeException(e);
         }

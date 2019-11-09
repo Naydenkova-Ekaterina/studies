@@ -34,7 +34,8 @@ public class DriverDAOImpl implements DriverDAO {
     public void update(Driver driver) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            session.update(driver);
+            session.merge(driver);
+
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }

@@ -32,7 +32,7 @@ public class OrderDAOImpl implements OrderDAO {
     public void update(Order order) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            session.update(order);
+            session.merge(order);
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }

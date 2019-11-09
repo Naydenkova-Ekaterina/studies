@@ -1,30 +1,30 @@
 package shipping.service.impl;
 
+import org.apache.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shipping.dao.CargoDAO;
 import shipping.dao.OrderDAO;
 import shipping.dao.RouteDAO;
-import shipping.dao.impl.CargoDAOImpl;
-import shipping.dto.CargoDTO;
-import shipping.dto.CityDTO;
-import shipping.dto.OrderDTO;
-import shipping.enums.WaypointType;
+import shipping.dto.*;
+import shipping.dto.converter.CargoConverter;
+import shipping.dto.converter.CityConverter;
+import shipping.dto.converter.OrderConverter;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 import shipping.model.City;
 import shipping.model.Order;
-import shipping.model.Waypoint;
 import shipping.service.api.*;
-
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+
+    private static final Logger logger = Logger.getLogger(OrderServiceImpl.class);
 
     private OrderDAO orderDAO;
 
@@ -32,14 +32,39 @@ public class OrderServiceImpl implements OrderService {
 
     private RouteDAO routeDAO;
 
-    @Autowired
-    private WaypointService waypointService;
+    private ModelMapper modelMapper;
 
-    @Autowired
+    private OrderConverter orderConverter;
+
+    private CargoConverter cargoConverter;
+
     private CargoService cargoService;
 
+    private CityConverter cityConverter;
+
+    private RouteService routeService;
+
     @Autowired
+    public void setRouteService(RouteService routeService) {
+        this.routeService = routeService;
+    }
+
+    @Autowired
+    public void setCargoService(CargoService cargoService) {
+        this.cargoService = cargoService;
+    }
+
+    @Autowired
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+
     private CityService cityService;
+
+    @Autowired
+    public void setCityService(CityService cityService) {
+        this.cityService = cityService;
+    }
 
     public void setOrderDAO(OrderDAO orderDAO) {
         this.orderDAO = orderDAO;
@@ -55,11 +80,61 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void addOrder(Order order) throws CustomServiceException {
+    public void addOrder(OrderDTO order) throws CustomServiceException {
         try {
-            orderDAO.addOrder(order);
-            for (Cargo cargo :order.getCargoSet()){
-                cargo.setOrder(order);
+            orderConverter = new OrderConverter(modelMapper);
+            cityConverter = new CityConverter(modelMapper);
+            cargoConverter = new CargoConverter(modelMapper);
+
+            CargoDTO cargo = cargoService.getCargoById(Integer.valueOf(order.getCargoDTO_id()));
+
+            int from = cityService.listCities().indexOf(cargo.getSrc().getCity());
+            int to = cityService.listCities().indexOf(cargo.getDst().getCity());
+
+            List<City> cities = routeService.getPath(from, to);
+            String way = "";
+            for (City c: cities) {
+                way += c.getName() + " ";
+            }
+            logger.debug("WAY = " + way);
+
+            order.setWay(way);
+
+            Set<CargoDTO> cargoDTOS = new HashSet<>();
+            cargoDTOS.add(cargo);
+
+            order.setCargoSet(cargoDTOS);
+
+
+
+            Order orderEntity = orderConverter.convertToEntity(order);
+
+            for (Cargo item :orderEntity.getCargoSet()){
+                item.setOrder(orderEntity);
+                cargoDAO.update(item);
+            }
+       //     orderDAO.addOrder(orderConverter.convertToEntity(order));
+
+//            for (Cargo item :orderEntity.getCargoSet()){
+//                item.setOrder(orderEntity);
+//                cargoDAO.update(item);
+//            }
+        } catch (CustomDAOException e) {
+            throw new CustomServiceException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateOrder(OrderDTO order) throws CustomServiceException {
+        try {
+            orderConverter = new OrderConverter(modelMapper);
+            Order orderEntity = orderConverter.convertToEntity(order);
+
+            orderDAO.update(orderConverter.convertToEntity(order));
+
+            for (Cargo cargo :orderEntity.getCargoSet()){
+                cargo.setOrder(orderEntity);
                 cargoDAO.update(cargo);
             }
         } catch (CustomDAOException e) {
@@ -69,13 +144,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void updateOrder(Order order) throws CustomServiceException {
+    public void updateOrderAfterChangingRoute(OrderDTO order) throws CustomServiceException {
         try {
-            //routeDAO.addRoute(order.getRoute());
-            orderDAO.update(order);
+            orderConverter = new OrderConverter(modelMapper);
+            Order orderEntity = orderConverter.convertToEntity(order);
 
-            for (Cargo cargo :order.getCargoSet()){
-                cargo.setOrder(order);
+            orderDAO.update(orderEntity);
+
+            for (Cargo cargo :orderEntity.getCargoSet()){
+                cargo.setOrder(orderEntity);
                 cargoDAO.update(cargo);
             }
         } catch (CustomDAOException e) {
@@ -85,15 +162,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void updateOrderAfterChangingRoute(Order order) throws CustomServiceException {
+    public List<OrderDTO> listOrders() throws CustomServiceException {
         try {
-            //routeDAO.addRoute(order.getRoute());
-            orderDAO.update(order);
-
-            for (Cargo cargo :order.getCargoSet()){
-                cargo.setOrder(order);
-                cargoDAO.update(cargo);
-            }
+            orderConverter = new OrderConverter(modelMapper);
+            return orderDAO.listOrders().stream().map(order -> orderConverter.convertToDto(order)).collect(Collectors.toList());
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -101,19 +173,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public List<Order> listOrders() throws CustomServiceException {
+    public OrderDTO getOrderById(int id) throws CustomServiceException {
         try {
-            return orderDAO.listOrders();
-        } catch (CustomDAOException e) {
-            throw new CustomServiceException(e);
-        }
-    }
-
-    @Override
-    @Transactional
-    public Order getOrderById(int id) throws CustomServiceException {
-        try {
-            return orderDAO.getOrder(id);
+            orderConverter = new OrderConverter(modelMapper);
+            return orderConverter.convertToDto(orderDAO.getOrder(id));
         } catch (CustomDAOException e) {
             e.printStackTrace();
             throw new CustomServiceException(e);
@@ -132,8 +195,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order getOrderByWagon(String id) throws CustomServiceException {
-        for (Order order: listOrders() ) {
+    public OrderDTO getOrderByWagon(String id) throws CustomServiceException {
+        orderConverter = new OrderConverter(modelMapper);
+        for (OrderDTO order: listOrders() ) {
             if (order.getWagon().getId().equals(id)) return order;
         }
         return null;
@@ -141,14 +205,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public double countOrderWeight(Order order) throws CustomServiceException {
+    public double countOrderWeight(OrderDTO order) throws CustomServiceException {
+        orderConverter = new OrderConverter(modelMapper);
+
         double weight = 0;
         double maxWeight = 0;
+        Order orderEntity = orderConverter.convertToEntity(order);
 
-        Set<Cargo> cargoes = order.getCargoSet();
-        List<City> cities = convertWayToList(order);
+        Set<Cargo> cargoes = orderEntity.getCargoSet();
+        List<CityDTO> cities = convertWayToList(order);
 
-        for (City city: cities) {
+        for (CityDTO city: cities) {
             for (Cargo cargo: cargoes) {
                 if (cargo.getSrc().getCity().getName().equals(city.getName())) {
                     weight += cargo.getWeight();
@@ -162,8 +229,12 @@ public class OrderServiceImpl implements OrderService {
         return maxWeight;
     }
 
-    public List<City> convertWayToList(Order order) throws CustomServiceException {
-        List<City> cities = new ArrayList<>();
+    @Override
+    @Transactional
+    public List<CityDTO> convertWayToList(OrderDTO order) throws CustomServiceException {
+        orderConverter = new OrderConverter(modelMapper);
+
+        List<CityDTO> cities = new ArrayList<>();
         String way = order.getWay().trim();
         ArrayList<String> stringArrayList = new ArrayList<>(Arrays.asList(way.split(" ")));
         for (String str: stringArrayList) {
@@ -173,4 +244,51 @@ public class OrderServiceImpl implements OrderService {
         return cities;
     }
 
-}
+    @Override
+    @Transactional
+    public List<CargoDTO> getOrderCargoes(int id) throws CustomServiceException {
+        orderConverter = new OrderConverter(modelMapper);
+        cargoConverter = new CargoConverter(modelMapper);
+        OrderDTO order = getOrderById(id);
+        Set<CargoDTO> cargos = order.getCargoSet();
+        List<CargoDTO> list = cargos.stream().collect(Collectors.toList());
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public List<DriverDto> getOrderDrivers(int id) throws CustomServiceException {
+        orderConverter = new OrderConverter(modelMapper);
+
+        OrderDTO orderDTO = getOrderById(id);
+        List<DriverDto> list = orderDTO.getDriverSet();
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public String addCargoToExistingOrder(int idOrder, int idCargo) throws CustomServiceException {
+        cityConverter = new CityConverter(modelMapper);
+
+        OrderDTO order = getOrderById(idOrder);
+        CargoDTO cargo = cargoService.getCargoById(idCargo);
+
+        Set<CargoDTO> cargos = order.getCargoSet();
+
+        order.setCargoSet(cargos);
+
+        if (!convertWayToList(order).contains(cargo.getSrc().getCity())) {
+            return "Make a new order for this cargo.";
+        }
+
+        String way = routeService.remakeRoute(order.getWay(), cargo);
+
+        order.getCargoSet().add(cargo);
+        order.setWay(way);
+
+        updateOrderAfterChangingRoute(order);
+        return "cargo was added";
+    }
+
+
+    }

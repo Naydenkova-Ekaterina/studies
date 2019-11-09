@@ -1,5 +1,6 @@
 package shipping.service.api;
 
+import shipping.dto.CargoDTO;
 import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 
@@ -7,14 +8,15 @@ import java.util.List;
 
 public interface CargoService {
 
-    void addCargo(Cargo cargo) throws CustomServiceException;
-    void updateCargo(Cargo cargo) throws CustomServiceException;
-    List<Cargo> listCargoes() throws CustomServiceException;
-    Cargo getCargoById(int id) throws CustomServiceException;
+    void addCargo(CargoDTO cargo) throws CustomServiceException;
+    void updateCargo(CargoDTO cargo) throws CustomServiceException;
+    List<CargoDTO> listCargoes() throws CustomServiceException;
+    CargoDTO getCargoById(int id) throws CustomServiceException;
     void removeCargo(int id) throws CustomServiceException;
-    List<Cargo> cargoesForWaypoint(int id) throws CustomServiceException;
-    List<Cargo> cargoesForSrcWaypoint(int id) throws CustomServiceException;
-    List<Cargo> cargoesForDstWaypoint(int id) throws CustomServiceException;
+    List<CargoDTO> cargoesForWaypoint(int id) throws CustomServiceException;
+    List<CargoDTO> cargoesForSrcWaypoint(int id) throws CustomServiceException;
+    List<CargoDTO> cargoesForDstWaypoint(int id) throws CustomServiceException;
+    List<CargoDTO> listFreeCargoes() throws CustomServiceException;
 
 
 }

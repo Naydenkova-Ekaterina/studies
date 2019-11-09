@@ -16,7 +16,7 @@ import static javax.persistence.CascadeType.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"src", "dst", "route"})
+@EqualsAndHashCode(exclude = {"src", "dst", "order"})
 public class Cargo {
 
     @Id

@@ -32,7 +32,7 @@ public class CargoDAOImpl implements CargoDAO {
     public void update(Cargo cargo) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-            session.update(cargo);
+            session.merge(cargo);
         } catch (Exception e) {
             throw new CustomDAOException(e);
         }

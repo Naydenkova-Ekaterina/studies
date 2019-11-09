@@ -33,12 +33,8 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Driver> driverSet;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {MERGE})
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Cargo> cargoSet;
-
-//    @OneToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
-//    @JoinColumn(name = "route_id")
-//    private Route route;
 
     private String way;
 

@@ -21,11 +21,9 @@ public class OrderDTO {
 
     private WagonDTO wagon;
 
-    private Set<CargoDTO> cargoDTOS;
+    private Set<CargoDTO> cargoSet;
 
     private String cargoDTO_id;
-
-    //private RouteDTO routeDTO;
 
     private String way;
 

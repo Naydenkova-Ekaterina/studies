@@ -26,6 +26,6 @@ public interface RouteService {
 
     double countDistanceForRoute(List<CityDTO> linkedList) throws CustomServiceException;
 
-    LocalTime getRouteTime(List<City> cities) throws CustomServiceException;
+    LocalTime getRouteTime(List<CityDTO> cities) throws CustomServiceException;
 
 }
