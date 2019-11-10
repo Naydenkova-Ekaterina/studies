@@ -9,6 +9,7 @@ import shipping.dto.CargoDTO;
 import shipping.dto.converter.CargoConverter;
 import shipping.dto.converter.OrderConverter;
 import shipping.dto.converter.WaypointConverter;
+import shipping.dto.rest.CargoDTOrest;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
@@ -178,6 +179,20 @@ public class CargoServiceImpl implements CargoService {
             }
         }
         return result;
+    }
+
+    @Override
+    @Transactional
+    public List<CargoDTOrest> listCargoesDTOrest() throws CustomDAOException {
+        cargoConverter = new CargoConverter(modelMapper);
+        List<CargoDTOrest> cargoDTOrests = new ArrayList<>();
+        List<Cargo> cargoes = cargoDAO.listCargoes();
+
+        for (Cargo cargo : cargoes) {
+            CargoDTOrest cargoDTOrest = cargoConverter.convertToDtoRest(cargo);
+            cargoDTOrests.add(cargoDTOrest);
+        }
+        return cargoDTOrests;
     }
 
     }

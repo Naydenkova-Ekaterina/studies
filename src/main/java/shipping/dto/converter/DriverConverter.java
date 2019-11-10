@@ -2,6 +2,7 @@ package shipping.dto.converter;
 
 import org.modelmapper.ModelMapper;
 import shipping.dto.DriverDto;
+import shipping.dto.rest.DriverDTOrest;
 import shipping.model.Driver;
 
 import java.time.LocalTime;
@@ -17,6 +18,11 @@ public class DriverConverter {
     public DriverDto convertToDto(Driver driver) {
         DriverDto driverDto = modelMapper.map(driver, DriverDto.class);
         return driverDto;
+    }
+
+    public DriverDTOrest convertToDtoRest(Driver driver) {
+        DriverDTOrest driverDTOrest = modelMapper.map(driver, DriverDTOrest.class);
+        return driverDTOrest;
     }
 
     public Driver convertToEntity(DriverDto driverDto) {

@@ -3,6 +3,8 @@ package shipping.service.api;
 import shipping.dto.CargoDTO;
 import shipping.dto.DriverDto;
 import shipping.dto.DriverInfoDTO;
+import shipping.dto.rest.DriverDTOrest;
+import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Driver;
 import shipping.model.Order;
@@ -30,5 +32,6 @@ public interface DriverService {
     void endShift() throws CustomServiceException;
     List<CargoDTO> getDriverCargoes() throws CustomServiceException;
     void updateDriverAfterSetOrder(DriverDto driverDto) throws CustomServiceException;
+    List<DriverDTOrest> listDriversDTOrest() throws CustomDAOException;
 
     }

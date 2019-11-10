@@ -1,6 +1,8 @@
 package shipping.service.api;
 
 import shipping.dto.CargoDTO;
+import shipping.dto.rest.CargoDTOrest;
+import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 
@@ -17,6 +19,6 @@ public interface CargoService {
     List<CargoDTO> cargoesForSrcWaypoint(int id) throws CustomServiceException;
     List<CargoDTO> cargoesForDstWaypoint(int id) throws CustomServiceException;
     List<CargoDTO> listFreeCargoes() throws CustomServiceException;
-
+    List<CargoDTOrest> listCargoesDTOrest() throws CustomDAOException;
 
 }

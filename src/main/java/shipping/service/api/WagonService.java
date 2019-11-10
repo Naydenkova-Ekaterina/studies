@@ -1,6 +1,8 @@
 package shipping.service.api;
 
 import shipping.dto.WagonDTO;
+import shipping.dto.rest.WagonDTOrest;
+import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Wagon;
 
@@ -15,5 +17,6 @@ public interface WagonService {
     void removeWagon(String id) throws CustomServiceException;
     List<WagonDTO> getSuitableWagons(int id) throws CustomServiceException;
     void setOrder(String idWagon, int idOrder) throws CustomServiceException;
+    List<WagonDTOrest> listWagonDTOrest() throws CustomDAOException;
 
     }

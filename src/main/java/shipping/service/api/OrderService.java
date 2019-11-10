@@ -4,6 +4,8 @@ import shipping.dto.CargoDTO;
 import shipping.dto.CityDTO;
 import shipping.dto.DriverDto;
 import shipping.dto.OrderDTO;
+import shipping.dto.rest.OrderDTOrest;
+import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.City;
 import shipping.model.Order;
@@ -24,5 +26,6 @@ public interface OrderService {
     List<CargoDTO> getOrderCargoes(int id) throws CustomServiceException;
     List<DriverDto> getOrderDrivers(int id) throws CustomServiceException;
     String addCargoToExistingOrder(int idOrder, int idCargo) throws CustomServiceException;
+    List<OrderDTOrest> listOrdersDTOrest() throws CustomDAOException;
 
     }

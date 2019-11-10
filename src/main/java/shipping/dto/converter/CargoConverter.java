@@ -2,6 +2,7 @@ package shipping.dto.converter;
 
 import org.modelmapper.ModelMapper;
 import shipping.dto.CargoDTO;
+import shipping.dto.rest.CargoDTOrest;
 import shipping.model.Cargo;
 
 public class CargoConverter {
@@ -18,6 +19,11 @@ public class CargoConverter {
             cargoDTO.setOrderDTO_id(String.valueOf(cargo.getOrder().getId()));
         }
         return cargoDTO;
+    }
+
+    public CargoDTOrest convertToDtoRest(Cargo cargo) {
+        CargoDTOrest cargoDTOrest = modelMapper.map(cargo, CargoDTOrest.class);
+        return cargoDTOrest;
     }
 
     public Cargo convertToEntity(CargoDTO cityDTO) {

@@ -12,6 +12,7 @@ import shipping.dto.*;
 import shipping.dto.converter.CargoConverter;
 import shipping.dto.converter.CityConverter;
 import shipping.dto.converter.OrderConverter;
+import shipping.dto.rest.OrderDTOrest;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
@@ -288,6 +289,20 @@ public class OrderServiceImpl implements OrderService {
 
         updateOrderAfterChangingRoute(order);
         return "cargo was added";
+    }
+
+    @Override
+    @Transactional
+    public List<OrderDTOrest> listOrdersDTOrest() throws CustomDAOException {
+        orderConverter = new OrderConverter(modelMapper);
+        List<OrderDTOrest> orderDTOrests = new ArrayList<>();
+        List<Order> orders = orderDAO.listOrders();
+
+        for (Order order : orders) {
+            OrderDTOrest orderDTOrest = orderConverter.convertToDtoRest(order);
+            orderDTOrests.add(orderDTOrest);
+        }
+        return orderDTOrests;
     }
 
 

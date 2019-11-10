@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shipping.dao.DriverDAO;
-import shipping.dao.DriverShiftDAO;
-import shipping.dao.WagonDAO;
 import shipping.dto.*;
 import shipping.dto.converter.*;
+import shipping.dto.rest.DriverDTOrest;
 import shipping.enums.DriverStatus;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
@@ -20,7 +19,6 @@ import shipping.model.Wagon;
 import shipping.service.api.*;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +53,13 @@ public class DriverServiceImpl implements DriverService {
     private WagonService wagonService;
 
     private WaypointService waypointService;
+
+    private MqService mqService;
+
+    @Autowired
+    public void setMqService(MqService mqService) {
+        this.mqService = mqService;
+    }
 
     @Autowired
     public void setWaypointService(WaypointService waypointService) {
@@ -113,6 +118,10 @@ public class DriverServiceImpl implements DriverService {
             }
 
             driverDAO.addDriver(driverConverter.convertToEntity(driver));
+
+            mqService.produceMessageStr("Created a new driver");
+
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -142,6 +151,9 @@ public class DriverServiceImpl implements DriverService {
                 driverDto.setUser(user);
             }
             driverDAO.update(driverConverter.convertToEntity(driverDto));
+
+            mqService.produceMessageWithId("Update a driver", driverDto.getId());
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -214,6 +226,8 @@ public class DriverServiceImpl implements DriverService {
                 // need or not
             }*/
             driverDAO.removeDriver(id);
+            mqService.produceMessageWithId("Deleted a driver", id);
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
         }
@@ -415,6 +429,20 @@ public class DriverServiceImpl implements DriverService {
             list = driver.getOrder().getCargoSet().stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
         }
         return list;
+    }
+
+    @Override
+    @Transactional
+    public List<DriverDTOrest> listDriversDTOrest() throws CustomDAOException {
+        driverConverter = new DriverConverter(modelMapper);
+        List<DriverDTOrest> driverDTOrests = new ArrayList<>();
+        List<Driver> drivers = driverDAO.listDrivers();
+
+        for (Driver driver : drivers) {
+            DriverDTOrest driverDTOrest = driverConverter.convertToDtoRest(driver);
+            driverDTOrests.add(driverDTOrest);
+        }
+        return driverDTOrests;
     }
 
     }

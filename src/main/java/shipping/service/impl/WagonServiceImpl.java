@@ -15,6 +15,7 @@ import shipping.dto.WagonDTO;
 import shipping.dto.converter.CityConverter;
 import shipping.dto.converter.OrderConverter;
 import shipping.dto.converter.WagonConverter;
+import shipping.dto.rest.WagonDTOrest;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.City;
@@ -178,6 +179,20 @@ public class WagonServiceImpl implements WagonService {
 
         order.setWagon(wagon);
         orderService.updateOrder(orderConverter.convertToDto(order));
+    }
+
+    @Override
+    @Transactional
+    public List<WagonDTOrest> listWagonDTOrest() throws CustomDAOException {
+        wagonConverter = new WagonConverter(modelMapper);
+        List<WagonDTOrest> wagonDTOrests = new ArrayList<>();
+        List<Wagon> cargoes = wagonDAO.listWagons();
+
+        for (Wagon wagon : cargoes) {
+            WagonDTOrest wagonDTOrest = wagonConverter.convertToDtoRest(wagon);
+            wagonDTOrests.add(wagonDTOrest);
+        }
+        return wagonDTOrests;
     }
 
     }
