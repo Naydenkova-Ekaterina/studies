@@ -18,12 +18,14 @@ import shipping.model.Order;
 import shipping.model.Wagon;
 import shipping.service.api.*;
 
+import java.io.IOException;
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -119,11 +121,15 @@ public class DriverServiceImpl implements DriverService {
 
             driverDAO.addDriver(driverConverter.convertToEntity(driver));
 
-            mqService.produceMessageStr("Created a new driver");
+            mqService.sendMsg("New driver was created");
 
 
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -152,10 +158,14 @@ public class DriverServiceImpl implements DriverService {
             }
             driverDAO.update(driverConverter.convertToEntity(driverDto));
 
-            mqService.produceMessageWithId("Update a driver", driverDto.getId());
+            mqService.sendMsg("A driver with id = " + driverDto.getId() + " was updated.");
 
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -226,10 +236,14 @@ public class DriverServiceImpl implements DriverService {
                 // need or not
             }*/
             driverDAO.removeDriver(id);
-            mqService.produceMessageWithId("Deleted a driver", id);
+            mqService.sendMsg("A driver with id = " + id + " was deleted.");
 
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
