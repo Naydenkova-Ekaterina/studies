@@ -1,5 +1,6 @@
 package shipping.service.impl;
 
+import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +16,20 @@ import shipping.exception.CustomServiceException;
 import shipping.model.Cargo;
 import shipping.model.Waypoint;
 import shipping.service.api.CargoService;
+import shipping.service.api.MqService;
 import shipping.service.api.OrderService;
 import shipping.service.api.WaypointService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
 public class CargoServiceImpl implements CargoService {
+
+    private static final Logger logger = Logger.getLogger(CargoServiceImpl.class);
 
     private CargoDAO cargoDAO;
 
@@ -36,6 +42,13 @@ public class CargoServiceImpl implements CargoService {
     private WaypointService waypointService;
 
     private OrderService orderService;
+
+    private MqService mqService;
+
+    @Autowired
+    public void setMqService(MqService mqService) {
+        this.mqService = mqService;
+    }
 
     @Autowired
     public void setOrderService(OrderService orderService) {
@@ -72,8 +85,15 @@ public class CargoServiceImpl implements CargoService {
             cargo.setDst(waypointConverter.convertToDto(dst));
 
             cargoDAO.addCargo(cargoConverter.convertToEntity(cargo));
+
+            mqService.sendMsg("New cargo was created");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -97,10 +117,16 @@ public class CargoServiceImpl implements CargoService {
                 cargoEntity.setOrder(orderConverter.convertToEntity(orderService.getOrderById(Integer.parseInt(cargo.getOrderDTO_id()))));
             }
 
-
             cargoDAO.update(cargoEntity);
+
+            mqService.sendMsg("A cargo with id = " + cargo.getId() + " was updated.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -132,8 +158,14 @@ public class CargoServiceImpl implements CargoService {
     public void removeCargo(int id) throws CustomServiceException {
         try {
             cargoDAO.removeCargo(id);
+            mqService.sendMsg("A cargo with id = " + id + " was deleted.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 

@@ -193,8 +193,15 @@ public class DriverServiceImpl implements DriverService {
                 driverDto.setUser(user);
             }
             driverDAO.update(driverConverter.convertToEntity(driverDto));
+
+            mqService.sendMsg("A driver with id = " + driverDto.getId() + " was updated.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 

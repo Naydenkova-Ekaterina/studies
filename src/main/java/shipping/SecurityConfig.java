@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/errorHandler","/u","/driver/setOrder/**","/driver/getSuitable/**", "/driver/registerAdd/**","/cities/listCitiesDTO","/suitableWagons","/wagon/getSuitable/**","/wagon/setOrder/**","/orders/listOrdersDTO", "/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
+                .antMatchers("/rest/driver/all","/rest/order/all","/rest/wagon/all","/rest/cargo/all","/errorHandler","/u","/driver/setOrder/**","/driver/getSuitable/**", "/driver/registerAdd/**","/cities/listCitiesDTO","/suitableWagons","/wagon/getSuitable/**","/wagon/setOrder/**","/orders/listOrdersDTO", "/", "/reg", "/user/add","/resources/**","/css/**","/js/**", "/img/**", "/index").permitAll()
                 //.antMatchers("/wagons", "/wagon/**", "/drivers", "/driver/**", "/cargoes", "/cargo/add", "/cargo/**", "/orders", "/order/**").hasAnyRole("admin")
                 .antMatchers("/suitableDrivers",
                         "/wagons", "/wagon/add", "/wagon/edit/**", "/wagon/update/**", "/wagon/remover/**",

@@ -19,7 +19,10 @@ import shipping.model.Cargo;
 import shipping.model.City;
 import shipping.model.Order;
 import shipping.service.api.*;
+
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +47,13 @@ public class OrderServiceImpl implements OrderService {
     private CityConverter cityConverter;
 
     private RouteService routeService;
+
+    private MqService mqService;
+
+    @Autowired
+    public void setMqService(MqService mqService) {
+        this.mqService = mqService;
+    }
 
     @Autowired
     public void setRouteService(RouteService routeService) {
@@ -120,8 +130,15 @@ public class OrderServiceImpl implements OrderService {
 //                item.setOrder(orderEntity);
 //                cargoDAO.update(item);
 //            }
+
+            mqService.sendMsg("New order was created");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -138,8 +155,14 @@ public class OrderServiceImpl implements OrderService {
                 cargo.setOrder(orderEntity);
                 cargoDAO.update(cargo);
             }
+            mqService.sendMsg("An order with id = " + order.getId() + " was updated.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -156,8 +179,14 @@ public class OrderServiceImpl implements OrderService {
                 cargo.setOrder(orderEntity);
                 cargoDAO.update(cargo);
             }
+            mqService.sendMsg("An order with id = " + order.getId() + " was updated.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -189,8 +218,14 @@ public class OrderServiceImpl implements OrderService {
     public void removeOrder(int id) throws CustomServiceException {
         try {
             orderDAO.removeOrder(id);
+            mqService.sendMsg("An order with id = " + id + " was deleted.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 

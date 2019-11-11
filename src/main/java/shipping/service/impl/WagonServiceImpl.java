@@ -22,11 +22,14 @@ import shipping.model.City;
 import shipping.model.Order;
 import shipping.model.Wagon;
 import shipping.service.api.CityService;
+import shipping.service.api.MqService;
 import shipping.service.api.OrderService;
 import shipping.service.api.WagonService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +48,13 @@ public class WagonServiceImpl implements WagonService {
     private CityService cityService;
 
     private OrderService orderService;
+
+    private MqService mqService;
+
+    @Autowired
+    public void setMqService(MqService mqService) {
+        this.mqService = mqService;
+    }
 
     @Autowired
     public void setOrderService(OrderService orderService) {
@@ -84,8 +94,14 @@ public class WagonServiceImpl implements WagonService {
 
             logger.debug("New wagon with id = " + wagon.getId() + " was created.");
 
+            mqService.sendMsg("New wagon was created");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -100,8 +116,14 @@ public class WagonServiceImpl implements WagonService {
             wagonDAO.update(wagonConverter.convertToEntity(wagon));
             logger.debug("Wagon with id = " + wagon.getId() + " was updated.");
 
+            mqService.sendMsg("A wagon with id = " + wagon.getId() + " was updated.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -143,8 +165,14 @@ public class WagonServiceImpl implements WagonService {
             wagonDAO.removeWagon(id);
             logger.debug("Wagon with id = " + wagon.getId() + " was removed.");
 
+            mqService.sendMsg("A driver with id = " + id + " was deleted.");
+
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
+        } catch (TimeoutException e) {
+            logger.error("TimeoutException during MQ message sending: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("IOException during MQ message sending: " + e.getMessage());
         }
     }
 
@@ -186,9 +214,9 @@ public class WagonServiceImpl implements WagonService {
     public List<WagonDTOrest> listWagonDTOrest() throws CustomDAOException {
         wagonConverter = new WagonConverter(modelMapper);
         List<WagonDTOrest> wagonDTOrests = new ArrayList<>();
-        List<Wagon> cargoes = wagonDAO.listWagons();
+        List<Wagon> wagons = wagonDAO.listWagons();
 
-        for (Wagon wagon : cargoes) {
+        for (Wagon wagon : wagons) {
             WagonDTOrest wagonDTOrest = wagonConverter.convertToDtoRest(wagon);
             wagonDTOrests.add(wagonDTOrest);
         }
