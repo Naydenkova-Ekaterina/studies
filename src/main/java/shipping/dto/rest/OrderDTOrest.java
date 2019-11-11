@@ -15,4 +15,6 @@ public class OrderDTOrest {
 
     private boolean isCompleted;
 
+    private String wagon;
+
 }

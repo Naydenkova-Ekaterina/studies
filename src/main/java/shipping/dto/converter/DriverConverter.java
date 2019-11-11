@@ -22,6 +22,9 @@ public class DriverConverter {
 
     public DriverDTOrest convertToDtoRest(Driver driver) {
         DriverDTOrest driverDTOrest = modelMapper.map(driver, DriverDTOrest.class);
+        if (driver.getOrder() != null) {
+            driverDTOrest.setOrder(String.valueOf(driver.getOrder().getId()));
+        }
         return driverDTOrest;
     }
 

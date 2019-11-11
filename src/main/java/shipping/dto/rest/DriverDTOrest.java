@@ -21,4 +21,6 @@ public class DriverDTOrest {
 
     private String workedHours;
 
+    private String order;
+
 }

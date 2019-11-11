@@ -20,8 +20,11 @@ public class OrderConverter {
         return orderDTO;
     }
 
-    public OrderDTOrest convertToDtoRest(Order cargo) {
-        OrderDTOrest orderDTOrest = modelMapper.map(cargo, OrderDTOrest.class);
+    public OrderDTOrest convertToDtoRest(Order order) {
+        OrderDTOrest orderDTOrest = modelMapper.map(order, OrderDTOrest.class);
+        if (order.getWagon() != null) {
+            orderDTOrest.setWagon(order.getWagon().getId());
+        }
         return orderDTOrest;
     }
 
