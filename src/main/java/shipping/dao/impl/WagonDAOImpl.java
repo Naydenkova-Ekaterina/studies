@@ -79,8 +79,8 @@ public class WagonDAOImpl implements WagonDAO {
     public List<String> getSuitableWagons(double requiredCapacity) throws CustomDAOException {
         try {
             Session session = sessionFactory.getCurrentSession();
-
-            Query query = session.createSQLQuery(" select w.id from shipping.Wagon w, shipping.My_Order o where w.status='serviceable' and w.capacity >= :requiredCapacity and o.wagon_id is null group by w.id" );
+            
+            Query query = session.createSQLQuery("select id from shipping.Wagon where id NOT IN (select distinct wagon_id from shipping.My_Order where wagon_id is not null) and status='serviceable' and capacity >= :requiredCapacity;");
             query.setParameter("requiredCapacity", requiredCapacity);
             List<String> ids = query.getResultList();
 
