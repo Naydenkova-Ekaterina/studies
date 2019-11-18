@@ -206,7 +206,7 @@ public class RouteServiceImpl implements RouteService {
 
             List<String> newSubRouteNewSrcToNewDstArray = newSubRouteNewSrcToNewDst.stream().map(city -> city.getName()).collect(Collectors.toList());
 
-            if (newSubRouteNewSrcToNewDstArray.contains(dstName)) {
+            if (newSubRouteNewSrcToNewDstArray.contains(dstName) && newSubRouteNewSrcToNewDstArray.contains(newCargo.getDst().getCity().getName())) {
                 if (i==startChangingIndexForRoute) {
 
                     newSubRouteNewSrcToNewDstArray.remove(0);
@@ -216,9 +216,11 @@ public class RouteServiceImpl implements RouteService {
 
                 }
 
-                oldRouteArrayForAdd.addAll(newSubRouteNewSrcToNewDstArray);
+                finalRoute.addAll(oldRouteArrayForAdd);
+                finalRoute.addAll(newSubRouteNewSrcToNewDstArray);
 
-                map.put(countDistanceForRoute(newSubRouteNewSrcToNewDst.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList())), oldRouteArrayForAdd);
+
+                map.put(countDistanceForRoute(newSubRouteNewSrcToNewDst.stream().map(city -> cityConverter.convertToDto(city)).collect(Collectors.toList())), finalRoute);
 
                 continue;
             }
@@ -251,11 +253,29 @@ public class RouteServiceImpl implements RouteService {
         }
 
         List<String> listConverted = new LinkedList<>(map.get(min));
-        newRoute = "";
-        for (String str: listConverted) {
-            newRoute += str + " ";
+
+        for (List<String> list: map.values()) {
+            list.forEach(System.out::println);
+            System.out.println();
         }
+
+        newRoute = correctRoute(listConverted);
+
         return newRoute;
+    }
+
+    public String correctRoute(List<String> route){
+        String result = "";
+        for (int i = 0; i < route.size()-1; i++) {
+            if (route.get(i).equals(route.get(i+1))) {
+                route.remove(i);
+            }
+        }
+        for (String str: route) {
+            result += str + " ";
+        }
+
+        return result;
     }
 
 
