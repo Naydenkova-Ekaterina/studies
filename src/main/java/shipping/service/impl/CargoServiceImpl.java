@@ -65,6 +65,7 @@ public class CargoServiceImpl implements CargoService {
     @Autowired
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        cargoConverter = new CargoConverter(modelMapper);
     }
 
     public void setCargoDAO(CargoDAO cargoDAO) {
@@ -130,11 +131,12 @@ public class CargoServiceImpl implements CargoService {
         }
     }
 
+
     @Override
     @Transactional
     public List<CargoDTO> listCargoes() throws CustomServiceException {
         try {
-            cargoConverter = new CargoConverter(modelMapper);
+//            cargoConverter = new CargoConverter(modelMapper);
             return cargoDAO.listCargoes().stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);

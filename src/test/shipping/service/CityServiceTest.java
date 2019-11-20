@@ -6,7 +6,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import shipping.dao.CityDAO;
+import shipping.dto.CityDTO;
+import shipping.dto.converter.CityConverter;
 import shipping.exception.CustomDAOException;
 import shipping.exception.CustomServiceException;
 import shipping.model.City;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static  org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,6 +32,13 @@ public class CityServiceTest {
     private CityDAO cityDAO;
 
     private List<City> cityList = new ArrayList<>();
+
+    private CityDTO cityDTO;
+
+    private ModelMapper modelMapper = new ModelMapper();
+
+    @Mock
+    private CityConverter cityConverter = new CityConverter(modelMapper);
 
 
     @Before
@@ -51,13 +62,23 @@ public class CityServiceTest {
 
     }
 
+    @Before
+    public void initDTO() {
+        cityDTO = new CityDTO();
+        cityDTO.setId(1);
+        cityDTO.setName("Moscow");
+    }
+
     @Test
     public void getCityByNameTest() throws CustomServiceException, CustomDAOException {
 
+        when(cityConverter.convertToDto(any(City.class))).thenReturn(cityDTO);
+
         when(cityDAO.listCities()).thenReturn(cityList);
 
-        City city = cityService.getCityByName("Vladivostok");
-        assertEquals(3, city.getId());
+        CityDTO city = cityService.getCityByName("Moscow");
+
+        assertEquals(1, city.getId());
 
     }
 

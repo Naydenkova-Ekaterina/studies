@@ -26,6 +26,7 @@ public class CityServiceImpl implements CityService {
     @Autowired
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        cityConverter = new CityConverter(modelMapper);
     }
 
     private CityConverter cityConverter;
@@ -38,7 +39,7 @@ public class CityServiceImpl implements CityService {
     @Transactional
     public List<CityDTO> listCities() throws CustomServiceException {
         try {
-            cityConverter = new CityConverter(modelMapper);
+//            cityConverter = new CityConverter(modelMapper);
             return cityDAO.listCities().stream()
                     .map(cargo -> cityConverter.convertToDto(cargo))
                     .collect(Collectors.toList());

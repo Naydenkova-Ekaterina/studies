@@ -39,7 +39,6 @@ public class DriverServiceImpl implements DriverService {
 
     private DriverConverter driverConverter;
 
-
     private UserConverter userConverter;
 
     private CargoConverter cargoConverter;
@@ -95,6 +94,9 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        driverConverter = new DriverConverter(modelMapper);
+        orderConverter = new OrderConverter(modelMapper);
+
     }
 
     @Autowired
@@ -173,7 +175,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public void updateDriverAfterSetOrder(DriverDto driverDto) throws CustomServiceException {
         try {
-            driverConverter = new DriverConverter(modelMapper);
+           // driverConverter = new DriverConverter(modelMapper);
             CityDTO city = cityService.getCityById(driverDto.getCity().getId());
 
             driverDto.setCity(city);
@@ -209,7 +211,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public List<DriverDto> listDrivers() throws CustomServiceException {
         try {
-            driverConverter = new DriverConverter(modelMapper);
+//            driverConverter = new DriverConverter(modelMapper);
             return driverDAO.listDrivers().stream().map(driver -> driverConverter.convertToDto(driver)).collect(Collectors.toList());
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
@@ -220,7 +222,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public DriverDto getDriverById(int id) throws CustomServiceException {
         try {
-            driverConverter = new DriverConverter(modelMapper);
+          //  driverConverter = new DriverConverter(modelMapper);
 
             return driverConverter.convertToDto(driverDAO.getDriver(id));
         } catch (CustomDAOException e) {
@@ -232,16 +234,17 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public void removeDriver(int id) throws CustomServiceException {
         try {
-            driverConverter = new DriverConverter(modelMapper);
+            //driverConverter = new DriverConverter(modelMapper);
 
             DriverDto driver = driverConverter.convertToDto(driverDAO.getDriver(id));
             if (driver == null) {
                 throw new CustomServiceException("Driver wasn't found.");
-            } /*else if (driver.getOrder() != null) {                           // should be returned
+            } else if (driver.getOrder() != null) {                           // should be returned
                 throw new CustomServiceException("Driver can't be removed, because he has an order.");
             } else if (driver.getWagon() != null) {
+                throw new CustomServiceException("Driver can't be removed, because he has a wagon.");
                 // need or not
-            }*/
+            }
             driverDAO.removeDriver(id);
             mqService.sendMsg("A driver with id = " + id + " was deleted.");
 
@@ -268,13 +271,11 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public Map<DriverDto, LocalTime> getSuitableDrivers(Order order, LocalTime orderTime) throws CustomServiceException {
         try {
-            driverConverter = new DriverConverter(modelMapper);
-
+            //driverConverter = new DriverConverter(modelMapper);
             Map<DriverDto, LocalTime> driversHoursMap = new HashMap<>();
 
             Wagon wagonForThisOrder = order.getWagon();
             if (wagonForThisOrder != null) {
-
 
                 List<Driver> availableDriversInTheSameCity = driverDAO.getAvailableDrivers(wagonForThisOrder.getCity());
 
@@ -319,7 +320,7 @@ public class DriverServiceImpl implements DriverService {
     public DriverDto getAuthenticatedDriver() throws CustomServiceException {
         org.springframework.security.core.userdetails.User user = userService.getAuthenticatedUser();
         try {
-            driverConverter = new DriverConverter(modelMapper);
+           // driverConverter = new DriverConverter(modelMapper);
 
             List<Driver> drivers = driverDAO.listDrivers();
             for (Driver driver : drivers) {
@@ -399,8 +400,8 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public void setOrder(int idDriver, int idOrder) throws CustomServiceException {
-        driverConverter = new DriverConverter(modelMapper);
-        orderConverter = new OrderConverter(modelMapper);
+        //driverConverter = new DriverConverter(modelMapper);
+//        orderConverter = new OrderConverter(modelMapper);
 
         OrderDTO order = orderService.getOrderById(idOrder);
         DriverDto driver = getDriverById(idDriver);
@@ -428,26 +429,25 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public void endShift() throws CustomServiceException {
-        driverConverter = new DriverConverter(modelMapper);
-        Driver driver = driverConverter.convertToEntity(getAuthenticatedDriver());
-        driver.setStatus(DriverStatus.rest);
+        DriverDto driver = getAuthenticatedDriver();
+        driver.setStatus(String.valueOf(DriverStatus.rest));
         if (driver.getWorkedHours() == null){
-            driver.setWorkedHours(LocalTime.of(8,0));
+            driver.setWorkedHours(LocalTime.of(8,0).toString());
         } else {
-            driver.setWorkedHours(driver.getWorkedHours().plusHours(8));
+            driver.setWorkedHours((LocalTime.parse(driver.getWorkedHours()).plusHours(8)).toString());
         }
-        updateDriverAfterSetOrder(driverConverter.convertToDto(driver));
+        updateDriverAfterSetOrder(driver);
     }
 
     @Override
     @Transactional
     public List<CargoDTO> getDriverCargoes() throws CustomServiceException {
-        driverConverter = new DriverConverter(modelMapper);
+       // driverConverter = new DriverConverter(modelMapper);
         cargoConverter = new CargoConverter(modelMapper);
-        Driver driver = driverConverter.convertToEntity(getAuthenticatedDriver());
+        DriverDto driver = getAuthenticatedDriver();
         List<CargoDTO> list = new ArrayList<>();
         if(driver.getOrder() != null) {
-            list = driver.getOrder().getCargoSet().stream().map(cargo -> cargoConverter.convertToDto(cargo)).collect(Collectors.toList());
+            list = driver.getOrder().getCargoSet().stream().collect(Collectors.toList());
         }
         return list;
     }

@@ -69,6 +69,8 @@ public class WagonServiceImpl implements WagonService {
     @Autowired
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        wagonConverter = new WagonConverter(modelMapper);
+
     }
 
     public void setWagonDAO(WagonDAO wagonDAO) {
@@ -131,7 +133,7 @@ public class WagonServiceImpl implements WagonService {
     @Transactional
     public List<WagonDTO> listWagons() throws CustomServiceException {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
+           // wagonConverter = new WagonConverter(modelMapper);
             return wagonDAO.listWagons().stream().map(wagon -> wagonConverter.convertToDto(wagon)).collect(Collectors.toList());
         } catch (CustomDAOException e) {
             throw new CustomServiceException(e);
@@ -180,7 +182,7 @@ public class WagonServiceImpl implements WagonService {
     @Transactional
     public List<WagonDTO> getSuitableWagons(int id) throws CustomServiceException {
         try {
-            wagonConverter = new WagonConverter(modelMapper);
+//            wagonConverter = new WagonConverter(modelMapper);
 
             OrderDTO order = orderService.getOrderById(id);
             double requiredCapacity = orderService.countOrderWeight(order);
@@ -200,7 +202,7 @@ public class WagonServiceImpl implements WagonService {
     @Override
     @Transactional
     public void setOrder(String idWagon, int idOrder) throws CustomServiceException {
-        wagonConverter = new WagonConverter(modelMapper);
+        //wagonConverter = new WagonConverter(modelMapper);
         orderConverter = new OrderConverter(modelMapper);
         Order order = orderConverter.convertToEntity(orderService.getOrderById(idOrder));
         Wagon wagon = wagonConverter.convertToEntity(getWagonById(idWagon));
